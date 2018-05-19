@@ -143,6 +143,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Route.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="RailwayCompany.cpp" />
+    <ClCompile Include="Time.cpp" />
+    <ClCompile Include="Train.cpp" />
+    <ClCompile Include="TrainMap.cpp" />
+    <ClCompile Include="TrainStation.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Route.h" />
+    <ClInclude Include="constants.h" />
+    <ClInclude Include="RailwayCompany.h" />
+    <ClInclude Include="Time.h" />
+    <ClInclude Include="Train.h" />
+    <ClInclude Include="TrainMap.h" />
+    <ClInclude Include="TrainStation.h" />
+    <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

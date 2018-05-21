@@ -13,7 +13,15 @@ public:
 	virtual VehicleType getType() const = 0;
 	int getId() const { return m_id; }
 
-	virtual int getFuelConsumption() const { return -1; }
+	virtual int getNumSeats() const { return -1; }          //SeatedCoach
+	virtual int getNumBeds() const { return -1; }           //SleeperCoach
+	virtual int getCapacity() const { return -1; }			//OpenGoods
+	virtual int getArea() const { return -1; }				//OpenGoods
+	virtual int getVolume() const { return -1; }			//CoveredGoods
+	virtual int getMaxSpeed() { return -1; }				//Engine
+	virtual int getEffect() const { return -1; }			//ElectricEngine
+	virtual int getFuelConsumption() const { return -1; }   //DieselEngine
+
 protected:
 	const int m_id;
 };
@@ -24,7 +32,7 @@ public:
 		:Vehicle(p_id), m_numSeats(p_numSeats), m_internet(p_internet) {}
 
 	VehicleType getType() const { return VehicleType::SeatedCoach; }
-	int getNumSeats() const { return m_numSeats; }
+	int getNumSeats() const override { return m_numSeats; }
 
 private:
 	const int m_numSeats;
@@ -37,7 +45,7 @@ public:
 		:Vehicle(p_id), m_numBeds(p_numBeds) {}
 
 	VehicleType getType() const { return VehicleType::SleeperCoach; }
-	int getNumBeds() const { return m_numBeds; }
+	int getNumBeds() const override { return m_numBeds; }
 
 private:
 	const int m_numBeds;
@@ -49,8 +57,8 @@ public:
 		:Vehicle(p_id), m_capacity(p_capacity), m_area(p_area) {}
 
 	VehicleType getType() const { return VehicleType::OpenGoods; }
-	int getCapacity() const { return m_capacity; }
-	int getArea() const { return m_area; }
+	int getCapacity() const override { return m_capacity; }
+	int getArea() const override { return m_area; }
 private:
 	const int m_capacity;
 	const int m_area;
@@ -62,40 +70,40 @@ public:
 		:Vehicle(p_id), m_volume(p_volume) {}
 
 	VehicleType getType() const { return VehicleType::CoveredGoods; }
-	int getVolume() const { return m_volume; }
+	int getVolume() const override { return m_volume; }
 
 private:
 	const int m_volume;
 };
 
-class Locomotive : public Vehicle {
+class Engine : public Vehicle {
 public:
-	Locomotive(const int p_id, const int p_maxSpeed)
+	Engine(const int p_id, const int p_maxSpeed)
 		: Vehicle(p_id), m_maxSpeed(p_maxSpeed) {}
-	virtual ~Locomotive() = default;
+	virtual ~Engine() = default;
 
-	int getMaxSpeed() { return m_maxSpeed; }
+	int getMaxSpeed() override { return m_maxSpeed; }
 
 protected:
 	const int m_maxSpeed;
 };
 
-class ElectricLoc : public Locomotive {
+class ElectricEngine : public Engine {
 public:
-	ElectricLoc(const int p_id, const int p_maxSpeed, const int p_effect)
-		:Locomotive(p_id, p_maxSpeed), m_effect(p_effect) {}
+	ElectricEngine(const int p_id, const int p_maxSpeed, const int p_effect)
+		:Engine(p_id, p_maxSpeed), m_effect(p_effect) {}
 
 	VehicleType getType() const override { return VehicleType::ElectricEngine; }
-	int getEffect() const { return m_effect; }
+	int getEffect() const override { return m_effect; }
 
 private:
 	const int m_effect;
 };
 
-class DieselLoc : public Locomotive {
+class DieselEngine : public Engine {
 public:
-	DieselLoc(const int p_id, const int p_maxSpeed, const int p_fuelConsumption)
-		:Locomotive(p_id, p_maxSpeed), m_fuelConsumption(p_fuelConsumption) {}
+	DieselEngine(const int p_id, const int p_maxSpeed, const int p_fuelConsumption)
+		:Engine(p_id, p_maxSpeed), m_fuelConsumption(p_fuelConsumption) {}
 
 	VehicleType getType() const override { return VehicleType::DieselEngine; }  
 	int getFuelConsumption() const override { return m_fuelConsumption; }

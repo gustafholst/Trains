@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <exception>
 #include "RailwayCompany.h"
 
 
@@ -25,8 +26,11 @@ void RailwayCompany::loadStations()
 				break;
 		}		
 	}
-	else
+	else {
 		std::cout << "TrainStations.txt could not be opened" << std::endl;  //throw exception instead
+		throw std::ios_base::failure("File 'Trainstations.txt' could not be opened");
+	}
+		
 }
 
 void RailwayCompany::loadTimetable()

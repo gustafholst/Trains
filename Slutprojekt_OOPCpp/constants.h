@@ -10,6 +10,10 @@ enum class VehicleType {
 	SeatedCoach = 0, SleeperCoach, OpenGoods, CoveredGoods, ElectricEngine, DieselEngine
 };
 
+enum class TrainState {
+	NOT_ASSEMBLED = 0, INCOMPLETE, ASSEMBLED, READY, RUNNING, ARRIVED, FINISHED
+};
+
 const std::vector<std::string> vehicleTypeStrings = {
 	"Seated Coach",
 	"Sleeper Coach",

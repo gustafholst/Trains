@@ -5,6 +5,7 @@
 
 #include <memory>
 #include "TrainStation.h"
+#include "Train.h"
 #include "Route.h"
 
 class RailwayCompany
@@ -15,6 +16,8 @@ public:
 
 	void loadStations();
 	void loadTimetable();
+
+	std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> locateVehicle(const int id);
 
 	void printAllStationNames() {
 		for (auto &s : m_stations)
@@ -30,6 +33,7 @@ public:
 private:
 	std::vector<TrainStation> m_stations;
 	std::vector<Route> m_timetable;
+	std::vector<std::shared_ptr<Train>> m_trainsInTraffic;
 };
 
 #endif // RAILWAYCOMPANY_H

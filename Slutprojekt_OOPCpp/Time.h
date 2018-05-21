@@ -17,6 +17,7 @@ public:
 	Time operator+= (const Time &time);
 	Time operator- (const Time &time);
 	Time operator-= (const Time &time);
+	bool operator> (const Time &time);
 
 	int getMins() const { return m_minutes; }
 	void setMins(const int p_minutes) { m_minutes = p_minutes; }

@@ -20,8 +20,10 @@ public:
 	std::string getName() const { return m_name; }
 	void setName(const std::string &p_name) { m_name = p_name; }
 
-	std::shared_ptr<Vehicle> findVehicle(VehicleType type) const;
+	std::shared_ptr<Vehicle> findVehicle(VehicleType type) const;  //search for vehicle of type x
 	void parkVehicle(std::shared_ptr<Vehicle> vehicle);
+
+	std::shared_ptr<Vehicle> locateVehicle(const int id) const;  // search for vehicle with id x
 
 private:
 	std::string m_name;

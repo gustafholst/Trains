@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <exception>
+#include <tuple>
 #include "RailwayCompany.h"
 
 
@@ -50,4 +51,23 @@ void RailwayCompany::loadTimetable()
 	}
 	else
 		std::cout << "Trains.txt could not be opened" << std::endl;  //throw exception
+}
+
+
+std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> RailwayCompany::locateVehicle(const int id)
+{
+	for (TrainStation &station : m_stations)  //search all stations
+	{
+		std::shared_ptr<Vehicle> found = station.locateVehicle(id);
+		if (found != nullptr)
+			return std::make_tuple(found, nullptr, &station);
+	}
+	for (std::shared_ptr<Train> train : m_trainsInTraffic)  //search all mounted trains
+	{
+		std::shared_ptr<Vehicle> found = train->locateVehicle(id);
+		if (found != nullptr)
+			return std::make_tuple(found, train, nullptr);
+	}
+
+	return { nullptr, nullptr, nullptr };  //vehicle does not exist
 }

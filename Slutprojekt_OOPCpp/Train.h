@@ -11,7 +11,7 @@
 class Train : public Route
 {
 public:
-	Train(const Route &route)
+	Train(const Route &)
 		:m_state(TrainState::NOT_ASSEMBLED), m_delay(0), m_avgSpeed(0) {}
 	Train(const int p_id, const std::string &p_depStation, const std::string &p_arrStation, const Time &p_depTime, const Time &p_arrTime)
 		:Route(p_id, p_depStation, p_arrStation, p_depTime, p_arrTime) {}
@@ -23,6 +23,8 @@ public:
 	void addVehicle(const std::shared_ptr<Vehicle> &p_vehicle) { m_vehicles.push_back(p_vehicle); }
 
 	//void decoupleVehicle
+
+	std::shared_ptr<Vehicle> locateVehicle(const int id) const;
 
 private:
 	TrainState m_state;

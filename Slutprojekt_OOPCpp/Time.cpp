@@ -30,6 +30,11 @@ Time Time::operator-=(const Time & time)
 	return this->m_minutes - time.m_minutes;
 }
 
+bool Time::operator>(const Time & time)
+{
+	return this->m_minutes > time.m_minutes;
+}
+
 std::istream & operator>>(std::istream & instream, Time & time)
 {
 	int hours, mins;

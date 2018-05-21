@@ -1,5 +1,5 @@
 
-
+#include <algorithm>
 #include <sstream>
 #include "TrainStation.h"
 
@@ -13,6 +13,19 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type) const
 void TrainStation::parkVehicle(std::shared_ptr<Vehicle> vehicle)
 {
 	m_vehicles.push_back(vehicle);
+}
+
+std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const
+{
+	
+	auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [id](const std::shared_ptr<Vehicle> &vptr) {
+		return vptr->getId() == id;
+	});
+
+	if (it != m_vehicles.cend())
+		return *it;
+
+	return nullptr;
 }
 
 std::istream & operator>>(std::istream & instream, TrainStation & ts)
@@ -53,11 +66,11 @@ std::istream & operator>>(std::istream & instream, TrainStation & ts)
 		}
 		else if (type == VehicleType::ElectricEngine)
 		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new ElectricLoc(param[0], param[2], param[3])));  // id, maxSpeed, effect
+			ts.parkVehicle(shared_ptr<Vehicle>(new ElectricEngine(param[0], param[2], param[3])));  // id, maxSpeed, effect
 		}
 		else if (type == VehicleType::DieselEngine)
 		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new DieselLoc(param[0], param[2], param[3])));  // id, maxSpeed, fuelConsumption
+			ts.parkVehicle(shared_ptr<Vehicle>(new DieselEngine(param[0], param[2], param[3])));  // id, maxSpeed, fuelConsumption
 		}
 
 		pos = row.find('(', pos + 1);  // find next bracket

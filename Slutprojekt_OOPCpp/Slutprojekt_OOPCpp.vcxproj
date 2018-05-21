@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -143,22 +143,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="auxilliary.cpp" />
+    <ClCompile Include="Event.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="Route.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="RailwayCompany.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Time.cpp" />
     <ClCompile Include="Train.cpp" />
     <ClCompile Include="TrainMap.cpp" />
     <ClCompile Include="TrainStation.cpp" />
+    <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="auxilliary.h" />
+    <ClInclude Include="Event.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="Route.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="RailwayCompany.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Train.h" />
     <ClInclude Include="TrainMap.h" />
     <ClInclude Include="TrainStation.h" />
+    <ClInclude Include="UserInterface.h" />
     <ClInclude Include="Vehicle.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

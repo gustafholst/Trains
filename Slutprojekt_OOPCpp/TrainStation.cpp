@@ -5,9 +5,20 @@
 
 
 
-std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type) const
+std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type) 
 {
-	return std::shared_ptr<Vehicle>();
+	m_vehicles.sort([](const std::shared_ptr<Vehicle> &a, const std::shared_ptr<Vehicle> &b) {
+		return a->getId() < b->getId();
+	});
+	
+	auto it = find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](const std::shared_ptr<Vehicle> &vptr) {
+		return vptr->getType() == type;
+	});
+
+	if (it != m_vehicles.cend())
+		return *it;
+
+	return nullptr;
 }
 
 void TrainStation::parkVehicle(std::shared_ptr<Vehicle> vehicle)

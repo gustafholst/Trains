@@ -29,6 +29,8 @@ int main()
 
 	RailwayCompany company;
 	company.loadStations();
+	company.loadTimetable();
+	company.loadMap();
 
 	UserInterface ui(&company);
 	ui.run();
@@ -39,7 +41,7 @@ int main()
 
 	/*cout << "#######################################################################################" << endl;
 
-	company.loadTimetable();
+	
 	company.printTimetable();
 
 	cout << "#######################################################################################" << endl;*/

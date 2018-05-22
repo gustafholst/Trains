@@ -33,8 +33,6 @@ public:
 	void doOption() 
 	{ 
 		m_function(); 
-		std::cout << "Press enter for menu..." << std::endl; 
-		std::cin.get(); 
 	}
 };
 

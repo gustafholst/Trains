@@ -33,6 +33,7 @@ void Menu::printMenuItems() const
 	{
 		std::cout << std::left << std::setw(6) << number++ <<  item.getText() << std::endl;
 	}
+	std::cout << std::left << std::setw(6) << 0 << "Return" << std::endl;
 }
 
 unsigned Menu::getMenuChoice() const

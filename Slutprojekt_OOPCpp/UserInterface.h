@@ -27,8 +27,15 @@ private:
 	Menu vehicleMenu;
 
 	void setupMenus();
+	void setupSimulationMenu();
+	void setupVehicleMenu();
+	void setupStationMenu();
 
 	void locateVehicle();
+
+	void printStation();
 };
+
+void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v);
 
 #endif //!USERINTERFACE_H

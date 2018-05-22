@@ -25,6 +25,8 @@ void RailwayCompany::loadStations()
 			m_stations.push_back(tmpStation);
 			if (inFile.eof())
 				break;
+
+			tmpStation = TrainStation();   //reinitialize in order to clear vehicle vector
 		}		
 	}
 	else {
@@ -51,6 +53,11 @@ void RailwayCompany::loadTimetable()
 	}
 	else
 		std::cout << "Trains.txt could not be opened" << std::endl;  //throw exception
+}
+
+void RailwayCompany::loadMap()
+{
+	distance.readFromFile();
 }
 
 

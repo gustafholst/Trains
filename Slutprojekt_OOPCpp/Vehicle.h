@@ -14,11 +14,12 @@ public:
 	int getId() const { return m_id; }
 
 	virtual int getNumSeats() const { return -1; }          //SeatedCoach
+	virtual bool hasInternet() const { return false; }		//SeatedCoach
 	virtual int getNumBeds() const { return -1; }           //SleeperCoach
 	virtual int getCapacity() const { return -1; }			//OpenGoods
 	virtual int getArea() const { return -1; }				//OpenGoods
 	virtual int getVolume() const { return -1; }			//CoveredGoods
-	virtual int getMaxSpeed() { return -1; }				//Engine
+	virtual int getMaxSpeed() const { return -1; }			//Engine
 	virtual int getEffect() const { return -1; }			//ElectricEngine
 	virtual int getFuelConsumption() const { return -1; }   //DieselEngine
 
@@ -33,6 +34,7 @@ public:
 
 	VehicleType getType() const { return VehicleType::SeatedCoach; }
 	int getNumSeats() const override { return m_numSeats; }
+	bool hasInternet() const override { return m_internet; }
 
 private:
 	const int m_numSeats;
@@ -82,7 +84,7 @@ public:
 		: Vehicle(p_id), m_maxSpeed(p_maxSpeed) {}
 	virtual ~Engine() = default;
 
-	int getMaxSpeed() override { return m_maxSpeed; }
+	int getMaxSpeed() const override { return m_maxSpeed; }
 
 protected:
 	const int m_maxSpeed;
@@ -111,6 +113,8 @@ public:
 private:
 	const int m_fuelConsumption;
 };
+
+
 #endif // VEHICLE_H
 
 

@@ -3,14 +3,11 @@
 #include "Route.h"
 
 
-
-
-
 Route::~Route()
 {
 }
 
-std::vector<std::string> Route::getVehicleTypes() const
+std::vector<std::string> Route::getVehicleTypeNames() const
 {
 	std::vector<std::string> types;
 	for (VehicleType t : m_vehicleTypes)
@@ -51,7 +48,7 @@ std::istream & operator>>(std::istream & instream, Route & route)
 
 std::ostream & operator<<(std::ostream & outstream, const Route & route)
 {
-	std::vector<std::string> vehicles = route.getVehicleTypes();
+	std::vector<std::string> vehicles = route.getVehicleTypeNames();
 	outstream << route.getId() << ' '
 		<< route.getDepStation() << ' '
 		<< route.getArrStation() << ' '

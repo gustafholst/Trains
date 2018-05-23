@@ -14,18 +14,22 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include "auxilliary.h"
 
 class MenuItem
 {
 private:
 	std::string m_text;
 	std::function<void()> m_function;
+	bool enabled;
 
 public:
 	MenuItem(const std::string &p_text, std::function<void()> p_function)
-		:m_text(p_text), m_function(p_function) {}
+		:m_text(p_text), m_function(p_function), enabled(true) {}
 
 	std::string getText() const { return m_text; }
+	bool isEnabled() const { return enabled; }
+	void disable() { enabled = false; }
 
 	/*
 	Call the function associated with this item.

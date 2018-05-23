@@ -10,9 +10,13 @@ UserInterface::~UserInterface()
 
 void UserInterface::run()
 {
-	while (simMenu.display()) {
-		goOn("Press enter...");
-	}
+	while (simMenu.display());
+}
+
+void UserInterface::seedSimulation()
+{
+	m_railway->createTrains();
+	m_railway->scheduleTrains(m_simulation);
 }
 
 void UserInterface::setupMenus()
@@ -26,10 +30,10 @@ void UserInterface::setupSimulationMenu()
 {
 	simMenu.setHead("Simulation menu");
 	simMenu.addItem("Station menu...", [this]() {
-		stationMenu.display();
+		while (stationMenu.display());    //keep displaying until return option is chosen
 	});
 	simMenu.addItem("Vehicle menu...", [this]() {
-		vehicleMenu.display();
+		while (vehicleMenu.display());	 //keep displaying until return option is chosen
 	});
 }
 
@@ -39,9 +43,9 @@ void UserInterface::setupVehicleMenu()
 	vehicleMenu.addItem("Show vehicle by id", [this]() {
 		locateVehicle();
 	});
-	vehicleMenu.addItem("Find vehicle type seatec coach in station 4", [this]() {
+	/*vehicleMenu.addItem("Find vehicle type seatec coach in station 4", [this]() {
 		printVehicle(std::cout, m_railway->findVehicleType());
-	});
+	});*/
 	
 }
 
@@ -49,9 +53,7 @@ void UserInterface::setupStationMenu()
 {
 	stationMenu.setHead("Station menu");
 	stationMenu.addItem("Show station names", [this]() {
-		auto names = m_railway->getAllStationNames();
-		for (auto &str : names)
-			std::cout << str << std::endl;
+		displayAllStationNames();
 	});
 	stationMenu.addItem("Show station by name", [this]() {
 		printStation();
@@ -73,6 +75,8 @@ void UserInterface::locateVehicle()
 		printVehicle(cout, vehicle);
 		cout << "Vehicle currently at station: " << station->getName() << endl;
 	}
+
+	goOn("Press <ENTER> for menu...");
 }
 
 void UserInterface::printStation()
@@ -90,6 +94,17 @@ void UserInterface::printStation()
 	{
 		std::cout << "No station found" << std::endl;
 	}
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayAllStationNames()
+{
+	auto names = m_railway->getAllStationNames();
+	for (auto &str : names)
+		std::cout << str << std::endl;
+
+	goOn("Press <ENTER> for menu...");
 }
 
 void printVehicle(std::ostream & os, std::shared_ptr<const Vehicle> v)

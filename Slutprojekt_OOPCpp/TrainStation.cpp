@@ -5,7 +5,7 @@
 
 
 
-std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type) 
+std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 {
 	m_vehicles.sort([](const std::shared_ptr<Vehicle> &a, const std::shared_ptr<Vehicle> &b) {
 		return a->getId() < b->getId();
@@ -16,8 +16,12 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 	});
 
 	if (it != m_vehicles.cend())
-		return *it;
-
+	{
+		std::shared_ptr<Vehicle> foundVehicle = *it;
+		m_vehicles.erase(it);   //remove the vehicle from this staion
+		return foundVehicle;
+	}
+		
 	return nullptr;
 }
 
@@ -28,7 +32,6 @@ void TrainStation::parkVehicle(std::shared_ptr<Vehicle> vehicle)
 
 std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const
 {
-	
 	auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [id](const std::shared_ptr<Vehicle> &vptr) {
 		return vptr->getId() == id;
 	});
@@ -37,6 +40,39 @@ std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const
 		return *it;
 
 	return nullptr;
+}
+
+bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
+{
+	std::vector<VehicleType> neededVehicles = train->getVehicleTypes();
+	
+	bool complete = true;
+
+	if (train->getState() == TrainState::INCOMPLETE)
+	{
+		std::vector<std::shared_ptr<Vehicle>> vehicles = train->getVehicles();
+		for (size_t i = 0; i < neededVehicles.size(); ++i)
+		{
+			if (vehicles[i] == nullptr) { //if that vehicle is missing
+				std::shared_ptr<Vehicle> v = findVehicle(neededVehicles[i]);
+				if (v == nullptr)
+					complete = false;
+				else
+					train->addVehicle(v, i);   //add vehicle at spot i in the train
+			}
+		}
+		return complete;
+	}
+	//otherwise (first try to assemble train)
+	for (VehicleType type : neededVehicles)
+	{
+		std::shared_ptr<Vehicle> v = findVehicle(type);
+		if (v == nullptr)
+			complete = false;
+		train->addVehicle(v);
+	}
+
+	return complete;
 }
 
 std::istream & operator>>(std::istream & instream, TrainStation & ts)

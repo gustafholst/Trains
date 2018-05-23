@@ -31,7 +31,8 @@ void Menu::printMenuItems() const
 	int number = 1;
 	for (const MenuItem &item : menuItems)
 	{
-		std::cout << std::left << std::setw(6) << number++ <<  item.getText() << std::endl;
+		if (item.isEnabled())
+			std::cout << std::left << std::setw(6) << number++ <<  item.getText() << std::endl;
 	}
 	std::cout << std::left << std::setw(6) << 0 << "Return" << std::endl;
 }

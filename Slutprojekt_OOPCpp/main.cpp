@@ -32,7 +32,9 @@ int main()
 	company.loadTimetable();
 	company.loadMap();
 
-	UserInterface ui(&company);
+	Simulation simulation;
+
+	UserInterface ui(&company, &simulation);
 	ui.run();
 
 

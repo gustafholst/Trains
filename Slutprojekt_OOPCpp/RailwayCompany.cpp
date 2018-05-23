@@ -33,7 +33,6 @@ void RailwayCompany::loadStations()
 		std::cout << "TrainStations.txt could not be opened" << std::endl;  //throw exception instead
 		throw std::ios_base::failure("File 'Trainstations.txt' could not be opened");
 	}
-		
 }
 
 void RailwayCompany::loadTimetable()
@@ -69,7 +68,7 @@ std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> Rail
 		if (found != nullptr)
 			return std::make_tuple(found, nullptr, &station);
 	}
-	for (std::shared_ptr<Train> train : m_trainsInTraffic)  //search all mounted trains
+	for (std::shared_ptr<Train> train : m_runningTrains)  //search all mounted trains
 	{
 		std::shared_ptr<Vehicle> found = train->locateVehicle(id);
 		if (found != nullptr)
@@ -77,4 +76,48 @@ std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> Rail
 	}
 
 	return { nullptr, nullptr, nullptr };  //vehicle does not exist
+}
+
+TrainStation * RailwayCompany::getStation(std::string & sName)
+{
+	for (TrainStation &s : m_stations)
+	{
+		if (lowercase(s.getName()) == lowercase(sName))
+			return &s;
+	}
+
+	return nullptr;
+}
+
+std::vector<std::string> RailwayCompany::getAllStationNames() const
+{
+	std::vector<std::string> names;
+	for (auto &station : m_stations)
+		names.push_back(station.getName());
+
+	return names;
+}
+
+void RailwayCompany::scheduleTrains(Simulation * sim)
+{
+	for (TrainStation &station : m_stations)
+	{
+		std::vector<std::shared_ptr<Train>> trains = station.getTrains();
+		for (auto train : trains)
+		{
+			Time assemblyStart = train->getDepTime() - 30;
+			std::shared_ptr<Event> newEvent = std::shared_ptr<Event>(new AssemblyEvent(sim, this, assemblyStart, train));
+			sim->scheduleEvent(newEvent);
+		}
+	}
+}
+
+void RailwayCompany::createTrains()
+{
+	for (Route &route : m_timetable)
+	{
+		std::string stationName = route.getDepStation();
+		TrainStation *station = getStation(stationName);
+		station->addTrain(route);  //implicit conversion route -> train
+	}
 }

@@ -9,8 +9,8 @@
 #include "Train.h"
 #include "Route.h"
 #include "auxilliary.h"
+#include "Simulation.h"
 
-void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v);
 
 class RailwayCompany
 {
@@ -24,28 +24,13 @@ public:
 
 	std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> locateVehicle(const int id);
 
-	std::shared_ptr<Vehicle> findVehicleType() {
-		return m_stations[4].findVehicle(VehicleType::ElectricEngine);
+	std::shared_ptr<Vehicle> findVehicleType(TrainStation *station, VehicleType type) {    //const pointer!!!
+		return station->findVehicle(type);
 	}
 
-	const TrainStation* getStation(std::string &sName)
-	{
-		for (auto &s : m_stations)
-		{
-			if (lowercase(s.getName() )== lowercase(sName))
-				return &s;
-		}
-		
-		return nullptr;
-	}
+	TrainStation* getStation(std::string &sName);
 	
-	std::vector<std::string> getAllStationNames() {
-		std::vector<std::string> names;
-		for (auto &station : m_stations)
-			names.push_back(station.getName());
-
-		return names;
-	}
+	std::vector<std::string> getAllStationNames() const;
 
 	void printTimetable() {
 		std::cout << "Timetable" << std::endl;
@@ -53,10 +38,13 @@ public:
 			std::cout << r << std::endl;
 	}
 
+	void createTrains();
+	void scheduleTrains(Simulation *sim);
+
 private:
 	std::vector<TrainStation> m_stations;
 	std::vector<Route> m_timetable;
-	std::vector<std::shared_ptr<Train>> m_trainsInTraffic;
+	std::vector<std::shared_ptr<Train>> m_runningTrains;
 	TrainMap distance;   //functor
 };
 

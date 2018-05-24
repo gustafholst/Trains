@@ -35,7 +35,7 @@ public:
 	void setMaxSpeed(const int p_speed) { m_maxSpeed = p_speed; }
 	void addVehicleType(const VehicleType type) { m_vehicleTypes.push_back(type); }
 
-private:
+protected:
 	int m_id;
 	std::string m_depStation;
 	std::string m_arrStation;

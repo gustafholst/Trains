@@ -15,6 +15,7 @@
 #include <vector>
 #include <functional>
 #include "auxilliary.h"
+#include "Simulation.h"
 
 class MenuItem
 {
@@ -34,10 +35,7 @@ public:
 	/*
 	Call the function associated with this item.
 	*/
-	void doOption() 
-	{ 
-		m_function(); 
-	}
+	void doOption() { m_function(); }
 };
 
 class Menu
@@ -46,6 +44,8 @@ private:
 	std::string head;
 	std::vector<MenuItem> menuItems;
 	
+	void printHead() const;
+
 	/*
 	Prints the name of the menu followed by a numbered list of all menu items.
 	*/
@@ -78,7 +78,7 @@ public:
 
 	@return false if the exit program option has been chosen, true otherwise
 	*/
-	bool display();
+	bool display(Simulation * sim = nullptr);
 };
 
 

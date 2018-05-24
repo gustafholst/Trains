@@ -24,10 +24,14 @@ void Menu::addItem(const std::string & text, std::function<void()> p_function)
 	menuItems.emplace_back(text, p_function);   //construct item at the back of vector 
 }
 
+void Menu::printHead() const
+{
+	std::cout << head << std::endl;
+	sepLine(head.size(), '=');
+}
+
 void Menu::printMenuItems() const
 {
-	std::cout << "##### " << head << " #####" << std::endl << std::endl;
-
 	int number = 1;
 	for (const MenuItem &item : menuItems)
 	{
@@ -42,9 +46,17 @@ unsigned Menu::getMenuChoice() const
 	return getIntInput("Your choice: ", 0, menuItems.size());
 }
 
-bool Menu::display()
+bool Menu::display(Simulation * sim)
 {
 	clearScreen();
+	printHead();
+	if (sim != nullptr)
+	{
+		sepLine(26, '-');
+		std::cout << "Current time: " << formatTime(sim->getCurrentTime()) << std::endl;
+		std::cout << "Current interval: " << formatTime(sim->getCurrentInterval()) << std::endl;
+		sepLine(26, '-');
+	}
 	printMenuItems();
 	unsigned choice = getMenuChoice();
 	if (choice == 0)

@@ -75,6 +75,31 @@ bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
 	return complete;
 }
 
+const std::vector<std::shared_ptr<Vehicle>> TrainStation::getAllVehicles() const
+{
+	std::vector < std::shared_ptr<Vehicle> >vehicles;
+	copy(m_vehicles.cbegin(), m_vehicles.cend(), std::back_inserter(vehicles));
+	/*for (auto &shared : m_vehicles)
+		vehicles.push_back(std::shared_ptr<Vehicle>(shared));*/
+
+	return vehicles;
+}
+
+const std::vector<std::pair<VehicleType, int>> TrainStation::getVehicleCounts() const
+{
+	std::vector<std::pair<VehicleType, int>> counts;
+	for (size_t i = 0; i < vehicleTypeStrings.size(); ++i)
+	{
+		VehicleType type = static_cast<VehicleType>(i);
+		int count = std::count_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](std::shared_ptr<Vehicle> v) {
+			return v->getType() == type;
+		});
+		counts.push_back(std::make_pair(type, count));
+	}
+	
+	return counts;
+}
+
 std::istream & operator>>(std::istream & instream, TrainStation & ts)
 {
 	using namespace std;

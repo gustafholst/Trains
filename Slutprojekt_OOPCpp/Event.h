@@ -21,11 +21,16 @@ public:
 
 	Time getTime() const { return m_time; }
 
+	virtual std::string toString() const = 0;
+
 protected:
 	Simulation *m_simulation;  
 	RailwayCompany *m_railway;
 	Time m_time;
+	std::string m_statusString;
 };
+
+std::ostream &operator << (std::ostream &outstream, const Event &e);
 
 class EventComparison 
 {
@@ -44,6 +49,8 @@ public:
 
 	void processEvent() override;
 
+	std::string toString() const override;
+
 private:
 	std::shared_ptr<Train> m_train;
 };
@@ -56,6 +63,8 @@ public:
 		:Event(p_simulation, p_railway, p_time), m_train(p_train) {}
 		
 	void processEvent() override;
+
+	std::string toString() const override;
 
 private:
 	std::shared_ptr<Train> m_train;

@@ -1,6 +1,7 @@
 
 #include <functional>
 #include <algorithm>
+#include <sstream>
 #include "UserInterface.h"
 #include "auxilliary.h"
 
@@ -10,7 +11,7 @@ UserInterface::~UserInterface()
 
 void UserInterface::run()
 {
-	while (simMenu.display());
+	while (simMenu.display(m_simulation));
 }
 
 void UserInterface::seedSimulation()
@@ -29,6 +30,15 @@ void UserInterface::setupMenus()
 void UserInterface::setupSimulationMenu()
 {
 	simMenu.setHead("Simulation menu");
+	simMenu.addItem("Change interval", [this]() {
+		changeInterval();
+	});
+	simMenu.addItem("Next event", [this]() {
+		nextEvent();
+	});
+	simMenu.addItem("Run next interval", [this]() {
+		nextInterval();
+	});
 	simMenu.addItem("Station menu...", [this]() {
 		while (stationMenu.display());    //keep displaying until return option is chosen
 	});
@@ -56,8 +66,54 @@ void UserInterface::setupStationMenu()
 		displayAllStationNames();
 	});
 	stationMenu.addItem("Show station by name", [this]() {
-		printStation();
+		displayStation();
 	});
+}
+
+void UserInterface::nextEvent()
+{
+	std::shared_ptr<Event> next = m_simulation->getNextEvent();
+	if (next != nullptr)
+		printEvent(std::cout, next);
+
+	goOn("Press <ENTER> for menu..."); 
+}
+
+void UserInterface::nextInterval()
+{
+	std::vector<std::shared_ptr<Event>> latestEvents = m_simulation->getNextInterval();
+	for (auto e : latestEvents)
+	{
+		printEvent(std::cout, e);
+		std::cout << std::endl;
+	}
+		
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::changeInterval()
+{
+	Time newInterval;
+
+	while (true)
+	{
+		std::stringstream stream;
+		std::string input = getStringInput("New interval: ");
+		try
+		{
+			stream << input << ' ';
+			stream >> newInterval;
+			break;
+		}
+		catch (std::ios_base::failure &e)
+		{
+			std::cout << "Not a valid time" << std::endl;
+		}
+	}
+	
+	m_simulation->changeInterval(newInterval);
+	std::cout << "-- interval is changed --" << std::endl;
 }
 
 void UserInterface::locateVehicle()
@@ -79,7 +135,23 @@ void UserInterface::locateVehicle()
 	goOn("Press <ENTER> for menu...");
 }
 
-void UserInterface::printStation()
+void UserInterface::displayStation()
+{
+	std::string sName = getStringInput("Station name: ");
+	const TrainStation *station = m_railway->getStation(sName);
+	if (station != nullptr)
+	{
+		printStation(std::cout, station);
+	}
+	else
+	{
+		std::cout << "No station found" << std::endl;
+	}
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayVehiclesAtStation()
 {
 	std::string sName = getStringInput("Station name: ");
 	const TrainStation *station = m_railway->getStation(sName);
@@ -117,11 +189,41 @@ void printVehicle(std::ostream & os, std::shared_ptr<const Vehicle> v)
 	if (v->getType() == VehicleType::SeatedCoach)
 		os << (v->hasInternet() ? "internet onboard " : "no internet onboard ");
 
-		os << (v->getNumBeds() != -1 ? "Beds: " + std::to_string(v->getNumBeds()) + " " : "") <<
+	os << (v->getNumBeds() != -1 ? "Beds: " + std::to_string(v->getNumBeds()) + " " : "") <<
 		(v->getCapacity() != -1 ? "Capacity: " + std::to_string(v->getCapacity()) + ", " : "") <<
 		(v->getArea() != -1 ? "Area: " + std::to_string(v->getArea()) + " m^2 " : "") <<
 		(v->getVolume() != -1 ? "Volume: " + std::to_string(v->getVolume()) + " m^3 " : "") <<
 		(v->getMaxSpeed() != -1 ? "Max speed: " + std::to_string(v->getMaxSpeed()) + " km/h, " : "") <<
 		(v->getEffect() != -1 ? "Effect: " + std::to_string(v->getEffect()) + " kW " : "") <<
 		(v->getFuelConsumption() != -1 ? "Fuel consumption: " + std::to_string(v->getFuelConsumption()) + " l/h " : "") << endl;
+}
+
+void printStation(std::ostream & os, const TrainStation * station)
+{
+	std::vector<std::pair<VehicleType, int>> vehicleCounts = station->getVehicleCounts();
+	for (std::pair<VehicleType, int> count : vehicleCounts)
+	{ 
+		os << vehicleTypeStrings[static_cast<int>(count.first)] << ": " << count.second << std::endl;
+	}
+
+	const std::vector<std::shared_ptr<Train>> trains = station->getTrains();
+	for (std::shared_ptr<Train> train : trains)
+	{
+		printTrain(std::cout, train);
+		std::cout << std::endl;
+	}
+
+}
+
+void printTrain(std::ostream & os, std::shared_ptr<const Train> t)
+{
+	os << "Train [" << t->getId() << "] (" << trainStateStrings[static_cast<int>(t->getState())] << ") "
+		<< "from " << t->getDepStation() << ' ' << t->getDepTime() << " (" << t->getActualDepTime()
+		<< ") to " << t->getArrStation() << ' ' << t->getArrTime() << " (" << t->getActualArrTime() << ')'
+		<< " delay (" << formatTime(t->getDelay()) << ") speed = " << t->getAvgSpeed() << " km/h";
+}
+
+void printEvent(std::ostream & os, std::shared_ptr<const Event> e)
+{
+	os << *e;
 }

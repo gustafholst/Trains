@@ -33,6 +33,9 @@ void TrainMap::readFromFile()
 			m_distances[tmpDep][tmpArr] = tmpDist;
 		}
 	}
+	else {
+		throw std::ios_base::failure("File 'TrainMap.txt' could not be opened");
+	}
 }
 
 void TrainMap::printAll()

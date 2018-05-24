@@ -20,7 +20,7 @@ public:
 
 	void loadStations();
 	void loadTimetable();
-	void loadMap();
+	void loadMap() throw (std::ios_base::failure);
 
 	std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> locateVehicle(const int id);
 

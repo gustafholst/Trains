@@ -30,19 +30,27 @@ private:
 	Menu stationMenu;
 	Menu vehicleMenu;
 
-	void seedSimulation();
+	void seedSimulation();  //creates trains from the timetable and puts inital events in the event queue
 
 	void setupMenus();
 	void setupSimulationMenu();
 	void setupVehicleMenu();
 	void setupStationMenu();
 
+	void nextEvent();
+	void nextInterval();
+
+	void changeInterval();
 	void locateVehicle();
 
-	void printStation();
+	void displayStation();
+	void displayVehiclesAtStation();
 	void displayAllStationNames();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v);
+void printStation(std::ostream &os, const TrainStation *station);
+void printTrain(std::ostream &os, std::shared_ptr<const Train> t);
+void printEvent(std::ostream &os, std::shared_ptr<const Event> e);
 
 #endif //!USERINTERFACE_H

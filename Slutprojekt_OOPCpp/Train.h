@@ -20,6 +20,11 @@ public:
 	std::vector<std::shared_ptr<Vehicle>> getVehicles() const { return m_vehicles; }
 	TrainState getState() const { return m_state; }
 
+	Time getDelay() const { return m_delay; }
+	Time getActualDepTime() const { return m_depTime + m_delay; }
+	Time getActualArrTime() const { return m_arrTime + m_delay; }   //calculate arrival time based on speed!!
+	int getAvgSpeed() const { return m_avgSpeed; }
+
 	void setState(const TrainState p_newState) { m_state = p_newState; }
 	void increaseDelay(const Time &p_delay) { m_delay += p_delay; }
 	void setAvgSpeed(const int p_avgSpeed) { m_avgSpeed = p_avgSpeed; }

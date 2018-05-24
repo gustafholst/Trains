@@ -29,16 +29,12 @@ public:
 
 	void addTrain(Route &route) { m_trains.push_back(std::shared_ptr<Train>(new Train(route))); }
 
-	std::vector <std::shared_ptr<Train>> getTrains() { return m_trains; }
+	const std::vector <std::shared_ptr<Train>> getTrains() const { return m_trains; }
 	bool assembleTrain(std::shared_ptr<Train> train);
 	
-	const std::vector<std::shared_ptr<Vehicle>> getAllVehicles() const { 
-		std::vector < std::shared_ptr<Vehicle> >vehicles;
-		for (auto &shared : m_vehicles)
-			vehicles.push_back(std::shared_ptr<Vehicle>(shared));
+	const std::vector<std::shared_ptr<Vehicle>> getAllVehicles() const;
+	const std::vector<std::pair<VehicleType, int>> getVehicleCounts() const;
 
-		return vehicles; 
-	}
 private:
 	std::string m_name;
 	std::list <std::shared_ptr<Vehicle>> m_vehicles;

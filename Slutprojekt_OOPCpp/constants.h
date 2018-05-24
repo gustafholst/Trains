@@ -23,6 +23,16 @@ const std::vector<std::string> vehicleTypeStrings = {
 	"Diesel Engine"
 };
 
+const std::vector<std::string> trainStateStrings = {
+	"NOT ASSEMBLED",
+	"INCOMPLETE",
+	"ASSEMBLED",
+	"READY",
+	"RUNNING",
+	"ARRIVED",
+	"FINISHED"
+};
+
 #endif // CONSTANTS_H
 
 

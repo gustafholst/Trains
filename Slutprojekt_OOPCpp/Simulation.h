@@ -15,8 +15,13 @@ public:
 		:m_currentTime(0), m_interval(10) {}
 	~Simulation();
 
+	Time getCurrentTime() const { return m_currentTime; }
+	Time getCurrentInterval() const { return m_interval; }
 	void changeInterval(const Time &p_newInterval) { m_interval = p_newInterval; }
 	void scheduleEvent(std::shared_ptr<Event> p_event) { m_eventQueue.push(p_event); }
+
+	std::shared_ptr<Event> getNextEvent();
+	std::vector<std::shared_ptr<Event>> getNextInterval();
 
 private:
 	Time m_currentTime;

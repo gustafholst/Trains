@@ -30,7 +30,6 @@ void RailwayCompany::loadStations()
 		}		
 	}
 	else {
-		std::cout << "TrainStations.txt could not be opened" << std::endl;  //throw exception instead
 		throw std::ios_base::failure("File 'Trainstations.txt' could not be opened");
 	}
 }
@@ -51,7 +50,9 @@ void RailwayCompany::loadTimetable()
 		}
 	}
 	else
-		std::cout << "Trains.txt could not be opened" << std::endl;  //throw exception
+	{
+		throw std::ios_base::failure("File 'Trains.txt' could not be opened");
+	}
 }
 
 void RailwayCompany::loadMap()

@@ -32,6 +32,9 @@ public:
 	const std::vector <std::shared_ptr<Train>> getTrains() const { return m_trains; }
 	bool assembleTrain(std::shared_ptr<Train> train);
 	
+	void arrive(std::shared_ptr<Train> train);
+	void depart(std::shared_ptr<Train> train);
+
 	const std::vector<std::shared_ptr<Vehicle>> getAllVehicles() const;
 	const std::vector<std::pair<VehicleType, int>> getVehicleCounts() const;
 

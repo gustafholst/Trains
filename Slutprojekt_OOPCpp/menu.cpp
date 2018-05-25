@@ -52,10 +52,10 @@ bool Menu::display(Simulation * sim)
 	printHead();
 	if (sim != nullptr)
 	{
-		sepLine(26, '-');
-		std::cout << "Current time: " << formatTime(sim->getCurrentTime()) << std::endl;
-		std::cout << "Current interval: " << formatTime(sim->getCurrentInterval()) << std::endl;
-		sepLine(26, '-');
+		sepLine(27, '-');
+		std::cout << std::left << std::setw(22) << "Current time: " << std::right << std::setw(5) << (sim->getCurrentTime()) << std::endl;
+		std::cout << std::left << std::setw(22) << "Current interval: " << std::right << std::setw(5) << formatTime(sim->getCurrentInterval()) << std::endl;
+		sepLine(27, '-');
 	}
 	printMenuItems();
 	unsigned choice = getMenuChoice();

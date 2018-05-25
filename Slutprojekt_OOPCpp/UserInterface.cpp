@@ -74,7 +74,10 @@ void UserInterface::nextEvent()
 {
 	std::shared_ptr<Event> next = m_simulation->getNextEvent();
 	if (next != nullptr)
+	{
 		printEvent(std::cout, next);
+		std::cout << std::endl;
+	}
 
 	goOn("Press <ENTER> for menu..."); 
 }
@@ -106,7 +109,7 @@ void UserInterface::changeInterval()
 			stream >> newInterval;
 			break;
 		}
-		catch (std::ios_base::failure &e)
+		catch (std::ios_base::failure &)
 		{
 			std::cout << "Not a valid time" << std::endl;
 		}

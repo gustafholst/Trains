@@ -79,6 +79,21 @@ std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> Rail
 	return { nullptr, nullptr, nullptr };  //vehicle does not exist
 }
 
+void RailwayCompany::placeInTransit(std::shared_ptr<Train> train)
+{
+	m_runningTrains.push_back(train);
+}
+
+void RailwayCompany::removeFromTransit(std::shared_ptr<Train> train)
+{
+	auto found = std::find_if(m_runningTrains.begin(), m_runningTrains.end(), [train](std::shared_ptr<Train> t) {
+		return train == t;
+	});
+
+	if (found != m_runningTrains.end())
+		m_runningTrains.erase(found);
+}
+
 TrainStation * RailwayCompany::getStation(std::string & sName)
 {
 	for (TrainStation &s : m_stations)

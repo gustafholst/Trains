@@ -20,7 +20,7 @@ public:
 private:
 	std::map<std::string, std::map<std::string, int>> m_distances;
 
-	int findDistance(const std::string &a, const std::string &b);
+	int findDistance(const std::string &a, const std::string &b);     //not necessary!?!?!?!?!
 };
 
 

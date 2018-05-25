@@ -28,6 +28,11 @@ public:
 		return station->findVehicle(type);
 	}
 
+	void placeInTransit(std::shared_ptr<Train> train);
+	void removeFromTransit(std::shared_ptr<Train> train);
+
+	int getDistance(const std::string &depStation, const std::string &arrStation) { return distance(depStation, arrStation); }
+
 	TrainStation* getStation(std::string &sName);
 	
 	std::vector<std::string> getAllStationNames() const;
@@ -44,7 +49,7 @@ public:
 private:
 	std::vector<TrainStation> m_stations;
 	std::vector<Route> m_timetable;
-	std::vector<std::shared_ptr<Train>> m_runningTrains;
+	std::list<std::shared_ptr<Train>> m_runningTrains;
 	TrainMap distance;   //functor
 };
 

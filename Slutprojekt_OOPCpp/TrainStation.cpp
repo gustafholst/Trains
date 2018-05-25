@@ -3,25 +3,51 @@
 #include <sstream>
 #include "TrainStation.h"
 
-
+bool vehicleCompare(const std::shared_ptr<Vehicle> a, const std::shared_ptr<Vehicle> b)
+{
+	return a->getId() < b->getId();
+}
 
 std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 {
-	m_vehicles.sort([](const std::shared_ptr<Vehicle> &a, const std::shared_ptr<Vehicle> &b) {
-		return a->getId() < b->getId();
-	});
-	
-	auto it = find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](const std::shared_ptr<Vehicle> &vptr) {
-		return vptr->getType() == type;
+	//m_vehicles.sort([](const std::shared_ptr<Vehicle> &a, const std::shared_ptr<Vehicle> &b) {
+	//	return a->getId() < b->getId();
+	//});
+	//
+	//auto it = find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](const std::shared_ptr<Vehicle> &vptr) {
+	//	return vptr->getType() == type;
+	//});
+
+	//if (it != m_vehicles.cend())
+	//{
+	//	std::shared_ptr<Vehicle> foundVehicle = *it;
+	//	m_vehicles.erase(it);   //remove the vehicle from this staion
+	//	return foundVehicle;
+	//}
+
+
+	//find first element of type
+	auto first = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](std::shared_ptr<Vehicle> v) {
+		return static_cast<int>(v->getType()) == static_cast<int>(type);
 	});
 
-	if (it != m_vehicles.cend())
+	if (first != m_vehicles.cend())
 	{
-		std::shared_ptr<Vehicle> foundVehicle = *it;
-		m_vehicles.erase(it);   //remove the vehicle from this staion
-		return foundVehicle;
+		//find first element of another type
+		auto last = std::find_if(first, m_vehicles.cend(), [type](std::shared_ptr<Vehicle> v) {
+			return static_cast<int>(v->getType()) != static_cast<int>(type);
+		});
+
+		last--;  //one step back to point to last of type
+		if (first != last)   //at least one vehicle of this type is present
+		{
+			auto it = min_element(first, last);
+			std::shared_ptr<Vehicle> foundVehicle = *it;
+			m_vehicles.erase(it);   //remove the vehicle from this staion
+			return foundVehicle;
+		}
 	}
-		
+	
 	return nullptr;
 }
 
@@ -73,6 +99,21 @@ bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
 	}
 
 	return complete;
+}
+
+void TrainStation::arrive(std::shared_ptr<Train> train)
+{
+	m_trains.push_back(train);
+}
+
+void TrainStation::depart(std::shared_ptr<Train> train)
+{
+	auto found = std::find_if(m_trains.begin(), m_trains.end(), [train](std::shared_ptr<Train> t) {
+		return train == t;
+	});
+
+	if (found != m_trains.end())
+		m_trains.erase(found);
 }
 
 const std::vector<std::shared_ptr<Vehicle>> TrainStation::getAllVehicles() const

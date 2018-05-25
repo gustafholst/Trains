@@ -27,7 +27,8 @@ public:
 
 	void setState(const TrainState p_newState) { m_state = p_newState; }
 	void increaseDelay(const Time &p_delay) { m_delay += p_delay; }
-	void setAvgSpeed(const int p_avgSpeed) { m_avgSpeed = p_avgSpeed; }
+	int setAvgSpeed(const int p_avgSpeed);    //returns speed that was actually set (depending on engines max speed and routes max speed)
+	void setDelay(const Time p_delay) { m_delay = p_delay; }
 	void addVehicle(const std::shared_ptr<Vehicle> &p_vehicle, int index = -1);
 
 	//void decoupleVehicle

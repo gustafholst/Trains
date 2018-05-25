@@ -13,6 +13,29 @@ Train::~Train()
 {
 }
 
+int Train::setAvgSpeed(const int p_avgSpeed)
+{
+	int speed = p_avgSpeed;
+
+	//check max speed for all vehicles (if any has lower max speed than p_avgSpeed: use the lower value)
+	for (auto v : m_vehicles)   
+	{
+		int max = v->getMaxSpeed();
+		if (max > 0 && max < speed)   //max > 0 -> vehicle has max speed (is engine)
+		{
+			speed = max;    
+		}
+	}
+
+	//finally check against maxSpeed of the route (which is generally lower than that of the engines)
+	if (m_maxSpeed < speed)  
+		speed = m_maxSpeed;
+
+	m_avgSpeed = speed;
+
+	return m_avgSpeed;  //return the speed that was set
+}
+
 void Train::addVehicle(const std::shared_ptr<Vehicle>& p_vehicle, int index)
 {
 	if (index == -1)

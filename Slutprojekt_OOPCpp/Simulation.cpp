@@ -13,7 +13,7 @@ std::shared_ptr<Event> Simulation::getNextEvent()
 	{
 		m_eventQueue.pop();   //remove event from queue
 		next->processEvent();
-		m_currentTime = next->getTime();   //update ckock
+		m_currentTime = next->getTime();   //update clock
 		return next;
 	}
 

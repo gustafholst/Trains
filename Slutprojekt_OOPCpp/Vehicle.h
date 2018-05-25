@@ -27,6 +27,8 @@ protected:
 	const int m_id;
 };
 
+
+
 class SeatedCoach : public Vehicle {
 public:
 	SeatedCoach(const int p_id, const int p_numSeats, const bool p_internet)

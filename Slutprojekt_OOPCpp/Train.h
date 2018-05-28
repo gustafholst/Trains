@@ -12,7 +12,7 @@ class Train : public Route
 {
 public:
 	Train(const Route &route)
-		:Route(route), m_state(TrainState::NOT_ASSEMBLED), m_delay(0), m_avgSpeed(0) {}
+		:Route(route), m_state(TrainState::NOT_ASSEMBLED), m_delay(0), m_actualDepTime(m_depTime), m_avgSpeed(0) {}
 	Train(const int p_id, const std::string &p_depStation, const std::string &p_arrStation, const Time &p_depTime, const Time &p_arrTime)
 		:Route(p_id, p_depStation, p_arrStation, p_depTime, p_arrTime) {}
 	~Train();
@@ -21,24 +21,24 @@ public:
 	TrainState getState() const { return m_state; }
 
 	Time getDelay() const { return m_delay; }
-	Time getActualDepTime() const { return m_depTime + m_delay; }
+	Time getActualDepTime() const { return m_actualDepTime; }
 	Time getActualArrTime() const { return m_arrTime + m_delay; }   //calculate arrival time based on speed!!
 	int getAvgSpeed() const { return m_avgSpeed; }
 
 	void setState(const TrainState p_newState) { m_state = p_newState; }
-	void increaseDelay(const Time &p_delay) { m_delay += p_delay; }
+	void increaseDelay(const Time &p_delay) { m_delay += p_delay; m_actualDepTime += p_delay; }  //used while train is incomplete 
 	int setAvgSpeed(const int p_avgSpeed);    //returns speed that was actually set (depending on engines max speed and routes max speed)
-	void setDelay(const Time p_delay) { m_delay = p_delay; }
-	void addVehicle(const std::shared_ptr<Vehicle> &p_vehicle, int index = -1);
-
-	//void decoupleVehicle
+	void setDelay(const Time p_delay) { m_delay = p_delay; }   //used then train leaves station to set the final delay
+	void addVehicle(const std::shared_ptr<Vehicle> p_vehicle, int index = -1);
+	std::shared_ptr<Vehicle> decoupleVehicle();
 
 	std::shared_ptr<Vehicle> locateVehicle(const int id) const;
 
 private:
 	TrainState m_state;
-	Time m_delay;
 	std::vector<std::shared_ptr<Vehicle>> m_vehicles;
+	Time m_delay;
+	Time m_actualDepTime;
 	int m_avgSpeed;
 };
 

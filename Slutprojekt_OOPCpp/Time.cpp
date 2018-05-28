@@ -26,7 +26,7 @@ Time Time::operator-(const Time & time) const
 	return difference;
 }
 
-Time Time::operator-=(const Time & time)
+Time& Time::operator-=(const Time & time)
 {
 	this->m_minutes = this->m_minutes - time.m_minutes;
 	return *this;

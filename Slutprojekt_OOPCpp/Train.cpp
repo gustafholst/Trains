@@ -36,12 +36,34 @@ int Train::setAvgSpeed(const int p_avgSpeed)
 	return m_avgSpeed;  //return the speed that was set
 }
 
-void Train::addVehicle(const std::shared_ptr<Vehicle>& p_vehicle, int index)
+void Train::addVehicle(const std::shared_ptr<Vehicle> p_vehicle, int index)
 {
 	if (index == -1)
 		m_vehicles.push_back(p_vehicle);  //when train not assembled
 	else
 		m_vehicles[index] = p_vehicle;    //when train is incomplete
+}
+
+std::shared_ptr<Vehicle> Train::decoupleVehicle()
+{
+	/*auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [p_vehicle](const std::shared_ptr<Vehicle> vptr) {
+		return vptr == p_vehicle;
+	});
+	if (it != m_vehicles.cend())
+	{
+		std::shared_ptr<Vehicle> decoupled = *it;
+		m_vehicles.erase(it);
+
+		return decoupled;
+	}*/
+
+	if (m_vehicles.empty())
+		return nullptr;
+
+	//decouple last vehicle
+	std::shared_ptr<Vehicle> decoupled = m_vehicles.back();
+	m_vehicles.pop_back();
+	return decoupled;
 }
 
 std::shared_ptr<Vehicle> Train::locateVehicle(const int id) const

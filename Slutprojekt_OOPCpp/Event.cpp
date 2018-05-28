@@ -75,15 +75,27 @@ void DepartureEvent::processEvent()
 	station->depart(m_train);   
 	m_railway->placeInTransit(m_train);
 
+	if (m_train->getId() == 121)
+		std::cout << "Gurra" << std::endl;
+
 	//calculate speed
 	int distance = m_railway->getDistance(m_train->getDepStation(), m_train->getArrStation());   //km
-	Time duration = m_train->getArrTime() - m_train->getDepTime();
-	int neededSpeed = static_cast<int>((distance / static_cast<float>(duration.getMins())) * 60);   // calculate with flotaing point for precision. km/min * 60 -> km/h
-	int approvedSpeed = m_train->setAvgSpeed(neededSpeed);
+	Time duration = m_train->getArrTime() - m_train->getActualDepTime();
+	// if departure time is before arrival time 
+	int approvedSpeed;
+	if (duration > 0) 
+	{
+		int neededSpeed = static_cast<int>((distance / static_cast<float>(duration.getMins())) * 60);   // calculate with flotaing point for precision. km/min * 60 -> km/h
+		approvedSpeed = m_train->setAvgSpeed(neededSpeed);  //setAvgSpeed returns the approved speed of specific train
+	}
+	else // train is very delayed
+	{
+		approvedSpeed = m_train->setAvgSpeed(m_train->getMaxSpeed());  // full speed ahead!
+	}
 
 	//calculate arrival time
 	Time actualDuration = static_cast<int>((distance / static_cast<float>(approvedSpeed)) *60);  // km / (km/h) = h , h * 60 = minutes   using implicit conversion with constructor Time (int minutes)
-	Time delay = actualDuration - duration;
+	Time delay = (m_train->getActualDepTime() + actualDuration) - m_train->getArrTime();
 	m_train->setDelay(delay);
 	Time newTime = m_train->getActualDepTime() + actualDuration;  //time for arrival = time of departure + actual travel time
 
@@ -123,6 +135,21 @@ void ArriveEvent::processEvent()
 void FinishEvent::processEvent()
 {
 	m_train->setState(TrainState::FINISHED);
+
+	//get pointer to arrival station
+	std::string stationName = m_train->getArrStation();
+	TrainStation * station = m_railway->getStation(stationName);
+
+	//decouple all vehicles
+	while (true)
+	{
+		std::shared_ptr<Vehicle> vehicle = m_train->decoupleVehicle();
+		if (!vehicle)
+			break;
+
+		station->parkVehicle(vehicle);
+	}
+		
 	printTrain(m_statusStream, m_train);
-	m_statusStream << "\nkuk";
+	m_statusStream << "\nis now disassembled";
 }

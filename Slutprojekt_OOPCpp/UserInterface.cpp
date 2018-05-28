@@ -84,14 +84,18 @@ void UserInterface::nextEvent()
 
 void UserInterface::nextInterval()
 {
+	Time from = m_simulation->getCurrentTime();
 	std::vector<std::shared_ptr<Event>> latestEvents = m_simulation->getNextInterval();
+	Time to = m_simulation->getCurrentTime();
+	sepLine(30, '=');
+	std::cout << "Events between " << formatTime(from) << " and " << formatTime(to) << std::endl;
+	sepLine(30, '=');
 	for (auto e : latestEvents)
 	{
 		printEvent(std::cout, e);
 		std::cout << std::endl;
 	}
 		
-
 	goOn("Press <ENTER> for menu...");
 }
 
@@ -162,7 +166,7 @@ void UserInterface::displayVehiclesAtStation()
 	{
 		std::vector < std::shared_ptr<Vehicle>> vehicles = station->getAllVehicles();
 		std::for_each(vehicles.cbegin(), vehicles.cend(), [](const std::shared_ptr<Vehicle> &v) {
-		printVehicle(std::cout, v);
+			printVehicle(std::cout, v);
 		});
 	}
 	else
@@ -208,14 +212,18 @@ void printStation(std::ostream & os, const TrainStation * station)
 	{ 
 		os << vehicleTypeStrings[static_cast<int>(count.first)] << ": " << count.second << std::endl;
 	}
-
+	//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	std::vector < std::shared_ptr<Vehicle>> vehicles = station->getAllVehicles();
+	std::for_each(vehicles.cbegin(), vehicles.cend(), [](const std::shared_ptr<Vehicle> &v) {
+		printVehicle(std::cout, v);
+	});
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	const std::vector<std::shared_ptr<Train>> trains = station->getTrains();
 	for (std::shared_ptr<Train> train : trains)
 	{
 		printTrain(std::cout, train);
 		std::cout << std::endl;
 	}
-
 }
 
 void printTrain(std::ostream & os, std::shared_ptr<const Train> t)

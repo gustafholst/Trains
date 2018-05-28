@@ -16,7 +16,7 @@ public:
 	Time operator+ (const Time &time) const;
 	Time& operator+= (const Time &time);
 	Time operator- (const Time &time) const ;
-	Time operator-= (const Time &time);
+	Time& operator-= (const Time &time);
 	bool operator> (const Time &time);
 	bool operator<= (const Time &time);
 
@@ -24,7 +24,7 @@ public:
 	void setMins(const int p_minutes) { m_minutes = p_minutes; }
 
 private:
-	unsigned m_minutes;
+	int m_minutes;
 };
 
 std::istream &operator >> (std::istream &instream, Time &time);

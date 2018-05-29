@@ -34,8 +34,12 @@ private:
 
 	void setupMenus();
 	void setupSimulationMenu();
-	void setupVehicleMenu();
+	void setupLogLevelMenu();
+	void setupTrainMenu();
 	void setupStationMenu();
+	void setupVehicleMenu();
+	
+	
 
 	void nextEvent();
 	void nextInterval();
@@ -46,11 +50,13 @@ private:
 	void displayStation();
 	void displayVehiclesAtStation();
 	void displayAllStationNames();
+	void displayAllVehicles();
+	void displayTrain();
 };
 
-void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v);
-void printStation(std::ostream &os, const TrainStation *station);
-void printTrain(std::ostream &os, std::shared_ptr<const Train> t);
+void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);
+void printStation(std::ostream &os, const TrainStation *station, LogLevel p_logLevel);
+void printTrain(std::ostream &os, std::shared_ptr<const Train> t, LogLevel p_logLevel);
 void printEvent(std::ostream &os, std::shared_ptr<const Event> e);
 
 #endif //!USERINTERFACE_H

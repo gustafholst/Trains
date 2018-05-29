@@ -76,6 +76,18 @@ std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const
 	return nullptr;
 }
 
+std::shared_ptr<Train> TrainStation::locateTrain(const int id) const
+{
+	auto found = find_if(m_trains.cbegin(), m_trains.cend(), [id](const std::shared_ptr<Train> t) {
+		return t->getId() == id;
+	});
+
+	if (found != m_trains.cend())
+		return *found;
+
+	return nullptr;
+}
+
 bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
 {
 	std::vector<VehicleType> neededVehicles = train->getVehicleTypes();

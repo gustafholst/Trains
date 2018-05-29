@@ -52,10 +52,11 @@ bool Menu::display(Simulation * sim)
 	printHead();
 	if (sim != nullptr)
 	{
-		sepLine(27, '-');
-		std::cout << std::left << std::setw(22) << "Current time: " << std::right << std::setw(5) << (sim->getCurrentTime()) << std::endl;
-		std::cout << std::left << std::setw(22) << "Current interval: " << std::right << std::setw(5) << formatTime(sim->getCurrentInterval()) << std::endl;
-		sepLine(27, '-');
+		sepLine(28, '-');
+		std::cout << std::left << std::setw(22) << "Current time: " << std::right << std::setw(6) << (sim->getCurrentTime()) << std::endl;
+		std::cout << std::left << std::setw(22) << "Current interval: " << std::right << std::setw(6) << formatTime(sim->getCurrentInterval()) << std::endl;
+		std::cout << std::left << std::setw(22) << "Current log level: " << std::right << std::setw(6) << logLevelStrings[static_cast<size_t>(sim->getLogLevel())] << std::endl;
+		sepLine(28, '-');
 	}
 	printMenuItems();
 	unsigned choice = getMenuChoice();

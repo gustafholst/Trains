@@ -18,7 +18,9 @@ public:
 	~Train();
 
 	std::vector<std::shared_ptr<Vehicle>> getVehicles() const { return m_vehicles; }
+	std::vector<VehicleType> getMissingVehicles() const;
 	TrainState getState() const { return m_state; }
+	int getId() const { return m_id; }
 
 	Time getDelay() const { return m_delay; }
 	Time getActualDepTime() const { return m_actualDepTime; }

@@ -5,7 +5,7 @@
 #include "RailwayCompany.h"
 #include "TrainStation.h"
 
-void printTrain(std::ostream &os, std::shared_ptr<const Train> v);
+void printTrain(std::ostream &os, std::shared_ptr<const Train> v, LogLevel p_logLevel);
 
 Event::~Event()
 {
@@ -35,9 +35,9 @@ void AssemblyEvent::processEvent()
 	{
 		m_train->setState(TrainState::ASSEMBLED);
 		Time newTime = m_time + 20;  // assembly takes 20 minutes
-		std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train); //std::shared_ptr<Event>(new ReadyEvent(m_simulation, m_railway, newTime, m_train));
+		std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train); 
 		m_simulation->scheduleEvent(nextEvent);
-		printTrain(m_statusStream, m_train);
+		printTrain(m_statusStream, m_train, LogLevel::HIGH);
 		m_statusStream << "\nnow assembled, arriving to the platform at " + formatTime(newTime);
 	}
 	else
@@ -47,7 +47,7 @@ void AssemblyEvent::processEvent()
 		Time newTime = m_time + 10;  // next try in 10 minutes
 		std::shared_ptr<Event> nextEvent = std::make_shared<AssemblyEvent>(m_simulation, m_railway, newTime, m_train); //std::shared_ptr<Event>(new AssemblyEvent(m_simulation, m_railway, newTime, m_train));
 		m_simulation->scheduleEvent(nextEvent);
-		printTrain(m_statusStream, m_train);
+		printTrain(m_statusStream, m_train, LogLevel::HIGH);
 		m_statusStream << "\nnow incomplete, next try at " + formatTime(newTime);
 	}
 }
@@ -58,10 +58,9 @@ void ReadyEvent::processEvent()
 	Time newTime = m_time + 10;    //train leaves in 10 minutes
 	std::shared_ptr<Event> nextEvent = std::make_shared<DepartureEvent>(m_simulation, m_railway, newTime, m_train);
 	m_simulation->scheduleEvent(nextEvent);
-	printTrain(m_statusStream, m_train);
+	printTrain(m_statusStream, m_train, LogLevel::HIGH);
 	m_statusStream << "\nnow ready, leaving station at " + formatTime(newTime);
 }
-
 
 void DepartureEvent::processEvent()
 {
@@ -104,7 +103,7 @@ void DepartureEvent::processEvent()
 	m_simulation->scheduleEvent(nextEvent);
 
 	//store event info
-	printTrain(m_statusStream, m_train);
+	printTrain(m_statusStream, m_train, LogLevel::HIGH);
 	m_statusStream << "\nhas left the station, travelling at speed " + std::to_string(approvedSpeed) + " km/h (" + std::to_string(m_train->getMaxSpeed()) + ')';
 }
 
@@ -128,7 +127,7 @@ void ArriveEvent::processEvent()
 	m_simulation->scheduleEvent(nextEvent);
 
 	//store event info
-	printTrain(m_statusStream, m_train);
+	printTrain(m_statusStream, m_train, LogLevel::HIGH);
 	m_statusStream << "\nhas arrived at the platform, disassembly at " + formatTime(newTime);
 }
 
@@ -150,6 +149,6 @@ void FinishEvent::processEvent()
 		station->parkVehicle(vehicle);
 	}
 		
-	printTrain(m_statusStream, m_train);
+	printTrain(m_statusStream, m_train, LogLevel::HIGH);
 	m_statusStream << "\nis now disassembled";
 }

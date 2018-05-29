@@ -26,6 +26,7 @@ public:
 	void parkVehicle(std::shared_ptr<Vehicle> vehicle);
 
 	std::shared_ptr<Vehicle> locateVehicle(const int id) const;  // search for vehicle with id x
+	std::shared_ptr<Train> locateTrain(const int id) const;
 
 	void addTrain(Route &route) { m_trains.push_back(std::shared_ptr<Train>(new Train(route))); }
 

@@ -3,14 +3,20 @@
 #include "Train.h"
 
 
-
-//Train::Train()
-//{
-//}
-
-
 Train::~Train()
 {
+}
+
+std::vector<VehicleType> Train::getMissingVehicles() const
+{
+	std::vector<VehicleType> missingTypes;
+	for (size_t i = 0; i < m_vehicles.size(); ++i)
+	{
+		if (m_vehicles[i] == nullptr)
+			missingTypes.push_back(m_vehicleTypes[i]);
+	}
+
+	return missingTypes;
 }
 
 int Train::setAvgSpeed(const int p_avgSpeed)
@@ -68,7 +74,7 @@ std::shared_ptr<Vehicle> Train::decoupleVehicle()
 
 std::shared_ptr<Vehicle> Train::locateVehicle(const int id) const
 {
-	auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [id](const std::shared_ptr<Vehicle> &vptr) {
+	auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [id](const std::shared_ptr<Vehicle> vptr) {
 		return vptr->getId() == id;
 	});
 

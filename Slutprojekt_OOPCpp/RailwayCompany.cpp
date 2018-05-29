@@ -61,22 +61,68 @@ void RailwayCompany::loadMap()
 }
 
 
+std::vector<std::shared_ptr<Vehicle>> RailwayCompany::getAllVehicles() const
+{
+	std::vector<std::shared_ptr<Vehicle>> allVehicles;
+	for (const TrainStation &station : m_stations)
+	{
+		std::vector<std::shared_ptr<Vehicle>> vehicles = station.getAllVehicles();
+		copy(vehicles.cbegin(), vehicles.cend(), std::back_inserter(allVehicles));
+	}
+
+	sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
+		return a->getId() < b->getId();
+	});
+
+	stable_sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
+		return a->getType() < b->getType();
+	});  
+
+	return allVehicles;
+}
+
 std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> RailwayCompany::locateVehicle(const int id)
 {
 	for (TrainStation &station : m_stations)  //search all stations
 	{
 		std::shared_ptr<Vehicle> found = station.locateVehicle(id);
-		if (found != nullptr)
+		if (found)
 			return std::make_tuple(found, nullptr, &station);
+
+		const std::vector<std::shared_ptr<Train>> mountedTrains = station.getTrains();
+		for (std::shared_ptr<Train> train : mountedTrains)  //search all mounted trains on each station
+		{
+			std::shared_ptr<Vehicle> found = train->locateVehicle(id);
+			if (found)
+				return std::make_tuple(found, train, nullptr);
+		}
 	}
-	for (std::shared_ptr<Train> train : m_runningTrains)  //search all mounted trains
+	
+	for (std::shared_ptr<Train> train : m_runningTrains)  //search all running trains
 	{
 		std::shared_ptr<Vehicle> found = train->locateVehicle(id);
-		if (found != nullptr)
+		if (found)
 			return std::make_tuple(found, train, nullptr);
 	}
 
 	return { nullptr, nullptr, nullptr };  //vehicle does not exist
+}
+
+std::shared_ptr<Train> RailwayCompany::locateTrain(const int id)
+{
+	for (auto t : m_runningTrains)
+	{
+		if (t->getId() == id)
+			return t;
+	}
+	for (auto s : m_stations)
+	{
+		std::shared_ptr<Train> train = s.locateTrain(id);
+		if (train)
+			return train;
+	}
+
+	return nullptr;
 }
 
 void RailwayCompany::placeInTransit(std::shared_ptr<Train> train)

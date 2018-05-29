@@ -20,9 +20,11 @@ public:
 
 	void loadStations();
 	void loadTimetable();
-	void loadMap() throw (std::ios_base::failure);
+	void loadMap();
 
+	std::vector<std::shared_ptr<Vehicle>> getAllVehicles() const;
 	std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> locateVehicle(const int id);
+	std::shared_ptr<Train> locateTrain(const int id);
 
 	std::shared_ptr<Vehicle> findVehicleType(TrainStation *station, VehicleType type) {    //const pointer!!!
 		return station->findVehicle(type);

@@ -14,6 +14,10 @@ enum class TrainState {
 	NOT_ASSEMBLED = 0, INCOMPLETE, ASSEMBLED, READY, RUNNING, ARRIVED, FINISHED
 };
 
+enum class LogLevel {
+	LOW = 0, NORMAL, HIGH
+};
+
 const std::vector<std::string> vehicleTypeStrings = {
 	"Seated Coach",
 	"Sleeper Coach",
@@ -31,6 +35,12 @@ const std::vector<std::string> trainStateStrings = {
 	"RUNNING",
 	"ARRIVED",
 	"FINISHED"
+};
+
+const std::vector<std::string> logLevelStrings = {
+	"Low",
+	"Normal",
+	"High"
 };
 
 #endif // CONSTANTS_H

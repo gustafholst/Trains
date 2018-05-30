@@ -15,7 +15,10 @@ class Event
 {
 public:
 	Event(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
-		:m_simulation(p_simulation), m_railway(p_railway), m_time(p_time), m_train(p_train) {};
+		:m_simulation(p_simulation), m_railway(p_railway), m_time(p_time), m_train(p_train) 
+	{
+		m_statusStream << formatTime(m_time) << ' ';   //put time of the event in the status stream (which is the only info known at this point)
+	};
 	virtual ~Event();
 
 	virtual void processEvent() = 0;

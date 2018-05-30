@@ -79,7 +79,7 @@ std::string formatTime(const Time & time)
 {
 	using namespace std;
 	int mins = time.getMins();
-	int hours = mins / 60;
+	int hours = (mins / 60) % 24;
 	mins = mins % 60;
 	std::ostringstream timeStream;
 	timeStream << setw(2) << setfill('0') << hours << setw(1) << ':' << setw(2) << mins;

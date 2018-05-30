@@ -55,6 +55,8 @@ bool Menu::display(Simulation * sim)
 		sepLine(28, '-');
 		std::cout << std::left << std::setw(22) << "Current time: " << std::right << std::setw(6) << (sim->getCurrentTime()) << std::endl;
 		std::cout << std::left << std::setw(22) << "Current interval: " << std::right << std::setw(6) << formatTime(sim->getCurrentInterval()) << std::endl;
+		std::cout << std::left << std::setw(22) << "Start time: " << std::right << std::setw(6) << formatTime(sim->getStartTime()) << std::endl;
+		std::cout << std::left << std::setw(22) << "End time: " << std::right << std::setw(6) << formatTime(sim->getEndTime()) << std::endl;
 		std::cout << std::left << std::setw(22) << "Current log level: " << std::right << std::setw(6) << logLevelStrings[static_cast<size_t>(sim->getLogLevel())] << std::endl;
 		sepLine(28, '-');
 	}

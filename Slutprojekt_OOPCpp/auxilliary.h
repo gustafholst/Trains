@@ -24,6 +24,7 @@
 
 
 #include <iostream>
+#include "Time.h"
 
 /*
 Prints a message to the user then waits for a string of size larger than 0 to be input.
@@ -53,18 +54,7 @@ be provided by the user.
 */
 int getIntInput(const std::string &message, const int &min = (std::numeric_limits<int>::min)(), const int &max = (std::numeric_limits<int>::max)());
 
-///*
-//Extracts an integer from the specified input stream. If a value is found that is in the specified range it will be
-//stored in the output reference variable 'output' and true will be returned. If the value is out of range the value
-//-1 will be stored in 'output' and false will be returned. If no integer value is found false is returned (output is not set).
-//
-//@param is the stream to extract from
-//@param output the variable to store the output
-//@param min the minimum value to accept
-//@param max the maximum value to accept
-//@return true if valid integer is extracted, false otherwise
-//*/
-//bool getInt(std::istream &is, int &output, const int &min, const int &max);
+Time getTimeInput(const std::string &message);
 
 /*
 Delays execution of the program for the specified amount of milliseconds.
@@ -113,15 +103,6 @@ Prints a message to the screen, waits for the user to press any key and then cle
 @param message the message to be printed to the screen
 */
 void goOn(const std::string &message);
-
-/*
-Prints the provided head sting decorated with some ASCII characters.
-
-@param head the head to print
-*/
-void printHead(const std::string &head);
-
-
 
 
 #endif //!AUXILLIARY_H

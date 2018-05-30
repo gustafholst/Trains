@@ -6,15 +6,6 @@
 #include "RailwayCompany.h"
 
 
-RailwayCompany::RailwayCompany()
-{
-}
-
-
-RailwayCompany::~RailwayCompany()
-{
-}
-
 void RailwayCompany::loadStations()
 {
 	std::ifstream inFile("TrainStations.txt");
@@ -83,16 +74,17 @@ std::vector<std::shared_ptr<Vehicle>> RailwayCompany::getAllVehicles() const
 
 std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> RailwayCompany::locateVehicle(const int id)
 {
+	std::shared_ptr<Vehicle> found;
 	for (TrainStation &station : m_stations)  //search all stations
 	{
-		std::shared_ptr<Vehicle> found = station.locateVehicle(id);
+		found = station.locateVehicle(id);
 		if (found)
 			return std::make_tuple(found, nullptr, &station);
 
 		const std::vector<std::shared_ptr<Train>> mountedTrains = station.getTrains();
 		for (std::shared_ptr<Train> train : mountedTrains)  //search all mounted trains on each station
 		{
-			std::shared_ptr<Vehicle> found = train->locateVehicle(id);
+			found = train->locateVehicle(id);
 			if (found)
 				return std::make_tuple(found, train, nullptr);
 		}
@@ -100,7 +92,7 @@ std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> Rail
 	
 	for (std::shared_ptr<Train> train : m_runningTrains)  //search all running trains
 	{
-		std::shared_ptr<Vehicle> found = train->locateVehicle(id);
+		found = train->locateVehicle(id);
 		if (found)
 			return std::make_tuple(found, train, nullptr);
 	}
@@ -151,6 +143,15 @@ TrainStation * RailwayCompany::getStation(std::string & sName)
 	return nullptr;
 }
 
+std::vector<const TrainStation*> RailwayCompany::getAllStations() const
+{
+	std::vector<const TrainStation*> stationPtrs;
+	for (const TrainStation &station : m_stations)
+		stationPtrs.push_back(&station);
+
+	return stationPtrs;
+}
+
 std::vector<std::string> RailwayCompany::getAllStationNames() const
 {
 	std::vector<std::string> names;
@@ -158,20 +159,6 @@ std::vector<std::string> RailwayCompany::getAllStationNames() const
 		names.push_back(station.getName());
 
 	return names;
-}
-
-void RailwayCompany::scheduleTrains(Simulation * sim)
-{
-	for (TrainStation &station : m_stations)
-	{
-		std::vector<std::shared_ptr<Train>> trains = station.getTrains();
-		for (auto train : trains)
-		{
-			Time assemblyStart = train->getDepTime() - 30;
-			std::shared_ptr<Event> newEvent = std::shared_ptr<Event>(new AssemblyEvent(sim, this, assemblyStart, train));
-			sim->scheduleEvent(newEvent);
-		}
-	}
 }
 
 void RailwayCompany::createTrains()

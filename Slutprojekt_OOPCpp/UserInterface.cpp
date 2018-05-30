@@ -5,28 +5,41 @@
 #include "UserInterface.h"
 #include "auxilliary.h"
 
-UserInterface::~UserInterface()
-{
-}
 
 void UserInterface::run()
 {
-	while (simMenu.display(m_simulation));
+	while (startMenu.display(m_simulation));
 }
 
 void UserInterface::seedSimulation()
 {
-	m_railway->createTrains();
-	m_railway->scheduleTrains(m_simulation);
+	m_railway->createTrains();                 //create train objects for every route
 }
 
 void UserInterface::setupMenus()
 {
+	setupStartMenu();
 	setupVehicleMenu();
 	setupStationMenu();
 	setupTrainMenu();
 	setupSimulationMenu();
 	setupLogLevelMenu();
+}
+
+void UserInterface::setupStartMenu()
+{
+	startMenu.setHead("Start menu");
+	startMenu.addItem("Change start time", [this]() {
+		changeStartTime();
+	});
+	startMenu.addItem("Change end time", [this]() {
+		changeEndTime();
+	});
+	startMenu.addItem("Start simulation", [this]() {
+		m_simulation->setupSimulation(m_railway);  //place assembly events for all trains in the event queue
+		m_simulation->startSimulation();           //process all events up until start time (if any)
+		while (simMenu.display(m_simulation));
+	});
 }
 
 void UserInterface::setupSimulationMenu()
@@ -145,26 +158,41 @@ void UserInterface::nextInterval()
 
 void UserInterface::changeInterval()
 {
-	Time newInterval;
+	Time newInterval = getTimeInput("New interval: ");
+	m_simulation->changeInterval(newInterval);
+	std::cout << "-- interval is changed --" << std::endl;
+}
 
+void UserInterface::changeStartTime()
+{
 	while (true)
 	{
-		std::stringstream stream;
-		std::string input = getStringInput("New interval: ");
-		try
-		{
-			stream << input << ' ';
-			stream >> newInterval;
+		Time newStartTime = getTimeInput("New start time: ");
+		
+		if (m_simulation->changeStartTime(newStartTime))
 			break;
-		}
-		catch (std::ios_base::failure &)
+		else 
 		{
-			std::cout << "Not a valid time" << std::endl;
+			std::cout << "-- Start time cannot be before end time --" << std::endl;
+			goOn("Press <ENTER> for menu...");
+		}	
+	}
+}
+
+void UserInterface::changeEndTime()
+{
+	while (true)
+	{
+		Time newEndTime = getTimeInput("New end time: ");
+
+		if (m_simulation->changeEndTime(newEndTime))
+			break;
+		else
+		{
+			std::cout << "-- End time cannot be before start time --" << std::endl;
+			goOn("Press <ENTER> for menu...");
 		}
 	}
-	
-m_simulation->changeInterval(newInterval);
-std::cout << "-- interval is changed --" << std::endl;
 }
 
 void UserInterface::locateVehicle()

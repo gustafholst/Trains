@@ -15,8 +15,7 @@
 class RailwayCompany
 {
 public:
-	RailwayCompany();
-	~RailwayCompany();
+	RailwayCompany() = default;
 
 	void loadStations();
 	void loadTimetable();
@@ -37,6 +36,7 @@ public:
 
 	TrainStation* getStation(std::string &sName);
 	
+	std::vector<const TrainStation*> getAllStations() const;
 	std::vector<std::string> getAllStationNames() const;
 
 	void printTimetable() {
@@ -46,7 +46,7 @@ public:
 	}
 
 	void createTrains();
-	void scheduleTrains(Simulation *sim);
+	//void scheduleTrains(Simulation *sim);             remove!!!!!
 
 private:
 	std::vector<TrainStation> m_stations;

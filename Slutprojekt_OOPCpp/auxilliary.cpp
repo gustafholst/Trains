@@ -1,5 +1,6 @@
 #include <string>
 #include <algorithm>
+#include <sstream>
 
 #include "auxilliary.h"
 
@@ -42,6 +43,27 @@ int getIntInput(const std::string &message, const int & min, const int & max)
 		}
 
 		std::cout << "Input value between " << min << " and " << max << std::endl;
+	}
+}
+
+Time getTimeInput(const std::string & message)
+{
+	Time inputTime;
+
+	while (true)
+	{
+		std::stringstream stream;
+		std::string input = getStringInput(message);
+		try
+		{
+			stream << input << ' ';
+			stream >> inputTime;
+			return inputTime;
+		}
+		catch (std::ios_base::failure &)
+		{
+			std::cout << "Not a valid time" << std::endl;
+		}
 	}
 }
 
@@ -133,16 +155,3 @@ void goOn(const std::string &message)
 	std::cout << message << std::endl;
 	std::cin.get();
 }
-
-void printHead(const std::string & head)
-{
-	sepLine(14 + 14 + head.size(), '#');
-	std::cout << "############# " << head << " #############" << std::endl;
-	sepLine(14 + 14 + head.size(), '#');
-	std::cout << std::endl;
-}
-
-
-
-
-

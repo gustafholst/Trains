@@ -16,7 +16,6 @@ public:
 		setupMenus();
 		seedSimulation();
 	};
-	~UserInterface();
 
 	void run();
 
@@ -33,18 +32,19 @@ private:
 	void seedSimulation();  //creates trains from the timetable and puts inital events in the event queue
 
 	void setupMenus();
+	void setupStartMenu();
 	void setupSimulationMenu();
 	void setupLogLevelMenu();
 	void setupTrainMenu();
 	void setupStationMenu();
 	void setupVehicleMenu();
 	
-	
-
 	void nextEvent();
 	void nextInterval();
 
 	void changeInterval();
+	void changeStartTime();
+	void changeEndTime();
 	void locateVehicle();
 
 	void displayStation();

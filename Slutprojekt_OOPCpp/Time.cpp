@@ -32,12 +32,17 @@ Time& Time::operator-=(const Time & time)
 	return *this;
 }
 
-bool Time::operator>(const Time & time)
+bool Time::operator<(const Time & time) const
+{
+	return this->m_minutes < time.m_minutes;
+}
+
+bool Time::operator>(const Time & time) const
 {
 	return this->m_minutes > time.m_minutes;
 }
 
-bool Time::operator<=(const Time & time)
+bool Time::operator<=(const Time & time) const
 {
 	return !(*this > time);
 }

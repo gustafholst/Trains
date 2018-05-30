@@ -35,20 +35,26 @@ void AssemblyEvent::processEvent()
 	{
 		m_train->setState(TrainState::ASSEMBLED);
 		Time newTime = m_time + 20;  // assembly takes 20 minutes
-		std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train); 
-		m_simulation->scheduleEvent(nextEvent);
-		printTrain(m_statusStream, m_train, LogLevel::HIGH);
-		m_statusStream << "\nnow assembled, arriving to the platform at " + formatTime(newTime);
+		if (newTime < Time(1440))   // 1440 = 24 * 60 
+		{
+			std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train);
+			m_simulation->scheduleEvent(nextEvent);
+			printTrain(m_statusStream, m_train, LogLevel::HIGH);
+			m_statusStream << "\nnow assembled, arriving to the platform at " + formatTime(newTime);
+		}
 	}
 	else
 	{
 		m_train->setState(TrainState::INCOMPLETE);
 		m_train->increaseDelay(10);
 		Time newTime = m_time + 10;  // next try in 10 minutes
-		std::shared_ptr<Event> nextEvent = std::make_shared<AssemblyEvent>(m_simulation, m_railway, newTime, m_train); //std::shared_ptr<Event>(new AssemblyEvent(m_simulation, m_railway, newTime, m_train));
-		m_simulation->scheduleEvent(nextEvent);
-		printTrain(m_statusStream, m_train, LogLevel::HIGH);
-		m_statusStream << "\nnow incomplete, next try at " + formatTime(newTime);
+		if (newTime < Time(1440))   // 1440 = 24 * 60 
+		{
+			std::shared_ptr<Event> nextEvent = std::make_shared<AssemblyEvent>(m_simulation, m_railway, newTime, m_train); 
+			m_simulation->scheduleEvent(nextEvent);
+			printTrain(m_statusStream, m_train, LogLevel::HIGH);
+			m_statusStream << "\nnow incomplete, next try at " + formatTime(newTime);
+		}
 	}
 }
 
@@ -56,10 +62,13 @@ void ReadyEvent::processEvent()
 {
 	m_train->setState(TrainState::READY);
 	Time newTime = m_time + 10;    //train leaves in 10 minutes
-	std::shared_ptr<Event> nextEvent = std::make_shared<DepartureEvent>(m_simulation, m_railway, newTime, m_train);
-	m_simulation->scheduleEvent(nextEvent);
-	printTrain(m_statusStream, m_train, LogLevel::HIGH);
-	m_statusStream << "\nnow ready, leaving station at " + formatTime(newTime);
+	if (newTime < Time(1440))   // 1440 = 24 * 60 
+	{
+		std::shared_ptr<Event> nextEvent = std::make_shared<DepartureEvent>(m_simulation, m_railway, newTime, m_train);
+		m_simulation->scheduleEvent(nextEvent);
+		printTrain(m_statusStream, m_train, LogLevel::HIGH);
+		m_statusStream << "\nnow ready, leaving station at " + formatTime(newTime);
+	}
 }
 
 void DepartureEvent::processEvent()

@@ -34,7 +34,7 @@ void AssemblyEvent::processEvent()
 	if (station->assembleTrain(m_train))
 	{
 		m_train->setState(TrainState::ASSEMBLED);
-		Time newTime = m_time + 20;  // assembly takes 20 minutes
+		Time newTime = m_time + ASSEMBLY_TIME;  // assembly takes 20 minutes
 		if (newTime < m_simulation->getEndTime())   // do no schedule ready event after end time
 		{
 			std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train);
@@ -42,14 +42,17 @@ void AssemblyEvent::processEvent()
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);  //store current snapshot of train in status stream
 			m_statusStream << "\nnow assembled, arriving to the platform at " + formatTime(newTime);
 		}
+		else
+		{
+			printTrain(m_statusStream, m_train, LogLevel::HIGH);  //store current snapshot of train in status stream
+			m_statusStream << "\nnow assembled, will not arrive at platform";
+		}
 	}
 	else
 	{
-		//if (m_train->getState() == TrainState::NOT_ASSEMBLED)
-		//	m_simulation->incomplete();
 		m_train->setState(TrainState::INCOMPLETE);
-		m_train->increaseDelay(10);
-		Time newTime = m_time + 10;  // next try in 10 minutes
+		m_train->increaseDelay(RETRY_TIME);
+		Time newTime = m_time + RETRY_TIME;  // next try in 10 minutes
 		if (newTime < m_simulation->getEndTime())   // do not schedule new assembly after end time
 		{
 			std::shared_ptr<Event> nextEvent = std::make_shared<AssemblyEvent>(m_simulation, m_railway, newTime, m_train); 
@@ -57,19 +60,28 @@ void AssemblyEvent::processEvent()
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);
 			m_statusStream << "\nnow incomplete, next try at " + formatTime(newTime);
 		}
+		else
+		{
+			printTrain(m_statusStream, m_train, LogLevel::HIGH);
+			m_statusStream << "\nnow incomplete, no more tries";
+		}
 	}
 }
 
 void ReadyEvent::processEvent()
 {
 	m_train->setState(TrainState::READY);
-	Time newTime = m_time + 10;    //train leaves in 10 minutes
+	Time newTime = m_time + READY_TIME;    //train leaves in 10 minutes
 	if (newTime < m_simulation->getEndTime())   // do not schedule new departure after end time
 	{
 		std::shared_ptr<Event> nextEvent = std::make_shared<DepartureEvent>(m_simulation, m_railway, newTime, m_train);
 		m_simulation->scheduleEvent(nextEvent);
 		printTrain(m_statusStream, m_train, LogLevel::HIGH);
 		m_statusStream << "\nnow ready, leaving station at " + formatTime(newTime);
+	}
+	else {
+		printTrain(m_statusStream, m_train, LogLevel::HIGH);
+		m_statusStream << "\nnow ready, will not leave station";
 	}
 }
 
@@ -84,9 +96,6 @@ void DepartureEvent::processEvent()
 	//move train from station to running trains
 	station->depart(m_train);   
 	m_railway->placeInTransit(m_train);
-
-	if (m_train->getId() == 121)
-		std::cout << "Gurra" << std::endl;
 
 	//calculate speed
 	int distance = m_railway->getDistance(m_train->getDepStation(), m_train->getArrStation());   //km
@@ -131,7 +140,7 @@ void ArriveEvent::processEvent()
 	station->arrive(m_train);
 	
 	//calculate time for disassembly
-	Time newTime = m_train->getActualArrTime() + 20;   // start disassembly after 20 minutes 
+	Time newTime = m_train->getActualArrTime() + DISASSEMBLY_TIME;   // start disassembly after 20 minutes 
 
 	//schedule next event
 	std::shared_ptr<Event> nextEvent = std::make_shared<FinishEvent>(m_simulation, m_railway, newTime, m_train);

@@ -13,7 +13,26 @@ void UserInterface::run()
 
 void UserInterface::seedSimulation()
 {
-	m_railway->createTrains();                 //create train objects for every route
+	m_railway->createTrains();    //create train objects for every route
+}
+
+void UserInterface::runSimulation()
+{
+	m_simulation->setupSimulation(m_railway);  //place assembly events for all trains in the event queue
+	m_simulation->startSimulation();           //process all events up until start time (if any)
+
+	while (simMenu.display(m_simulation) && !m_simulation->isFinished());
+	
+	//### simulation is finished ###
+
+	//disable menu items only applicable during simulation
+	for (size_t item = 0; item < 4; ++item)
+		simMenu.disableItem(item);
+
+	simMenu.enableItem(5);  //enable print statistics option
+	simMenu.enableItem(6);  //enable view all events option
+
+	while (simMenu.display(m_simulation));   //keep displaying menu until user is done
 }
 
 void UserInterface::setupMenus()
@@ -29,44 +48,55 @@ void UserInterface::setupMenus()
 void UserInterface::setupStartMenu()
 {
 	startMenu.setHead("Start menu");
-	startMenu.addItem("Change start time", [this]() {
+	startMenu.addItem("Change start time", true, [this]() {
 		changeStartTime();
 	});
-	startMenu.addItem("Change end time", [this]() {
+	startMenu.addItem("Change end time", true, [this]() {
 		changeEndTime();
 	});
-	startMenu.addItem("Start simulation", [this]() {
-		m_simulation->setupSimulation(m_railway);  //place assembly events for all trains in the event queue
-		m_simulation->startSimulation();           //process all events up until start time (if any)
-		while (simMenu.display(m_simulation));
+	startMenu.addItem("Start simulation", true, [this]() {
+		runSimulation();
 	});
 }
 
 void UserInterface::setupSimulationMenu()
 {
 	simMenu.setHead("Simulation menu");
-	simMenu.addItem("Change interval", [this]() {
+	simMenu.addItem("Change interval", true, [this]() {
 		changeInterval();
 	});
-	simMenu.addItem("Next event", [this]() {
+	simMenu.addItem("Next event", true, [this]() {
 		nextEvent();
 	});
-	simMenu.addItem("Run next interval", [this]() {
+	simMenu.addItem("Run next interval", true, [this]() {
 		nextInterval();
 	});
-	simMenu.addItem("Finish (Complete simulation)", [this]() {
-		
+	simMenu.addItem("Finish (Complete simulation)", true, [this]() {
+		m_simulation->finishSimulation();
 	});
-	simMenu.addItem("Change log level", [this]() {
+	simMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
-	simMenu.addItem("Train menu...", [this]() {
+	simMenu.addItem("Print statistics", false, [this]() {     //only display when simulation is finished
+		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	});
+	simMenu.addItem("View all events", false, [this]() {     //only display when simulation is finished
+		std::vector<std::shared_ptr<Event>> events = m_simulation->getAllEvents();
+		for (auto e : events)
+		{
+			printEvent(std::cout, e);
+			std::cout << '\n';
+		}
+			
+		goOn("Press <ENTER> for menu...");
+	});
+	simMenu.addItem("Train menu...", true, [this]() {
 		while (trainMenu.display(m_simulation));    //keep displaying until return option is chosen
 	});
-	simMenu.addItem("Station menu...", [this]() {
+	simMenu.addItem("Station menu...", true, [this]() {
 		while (stationMenu.display(m_simulation));    //keep displaying until return option is chosen
 	});
-	simMenu.addItem("Vehicle menu...", [this]() {
+	simMenu.addItem("Vehicle menu...", true, [this]() {
 		while (vehicleMenu.display(m_simulation));	 //keep displaying until return option is chosen
 	});
 }
@@ -74,13 +104,13 @@ void UserInterface::setupSimulationMenu()
 void UserInterface::setupVehicleMenu()
 {
 	vehicleMenu.setHead("Vehicle menu");
-	vehicleMenu.addItem("Show vehicle by id", [this]() {
+	vehicleMenu.addItem("Show vehicle by id", true, [this]() {
 		locateVehicle();
 	});
-	vehicleMenu.addItem("Show all vehicles", [this]() {
+	vehicleMenu.addItem("Show all vehicles", true, [this]() {
 		displayAllVehicles();
 	});
-	vehicleMenu.addItem("Change log level", [this]() {
+	vehicleMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
 }
@@ -88,13 +118,13 @@ void UserInterface::setupVehicleMenu()
 void UserInterface::setupStationMenu()
 {
 	stationMenu.setHead("Station menu");
-	stationMenu.addItem("Show station names", [this]() {
+	stationMenu.addItem("Show station names", true, [this]() {
 		displayAllStationNames();
 	});
-	stationMenu.addItem("Show station by name", [this]() {
+	stationMenu.addItem("Show station by name", true, [this]() {
 		displayStation();
 	});
-	stationMenu.addItem("Change log level", [this]() {
+	stationMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
 }
@@ -102,17 +132,17 @@ void UserInterface::setupStationMenu()
 void UserInterface::setupLogLevelMenu()
 {
 	logLevelMenu.setHead("Log level menu");
-	logLevelMenu.addItem("Low", [this]() {
+	logLevelMenu.addItem("Low", true, [this]() {
 		m_simulation->setLogLevel(LogLevel::LOW);
 		std::cout << "-- Log level is set to low --" << std::endl;
 		goOn("Press <ENTER> to go back...");
 	});
-	logLevelMenu.addItem("Normal", [this]() {
+	logLevelMenu.addItem("Normal", true, [this]() {
 		m_simulation->setLogLevel(LogLevel::NORMAL);
 		std::cout << "-- Log level is set to normal --" << std::endl;
 		goOn("Press <ENTER> to go back...");
 	});
-	logLevelMenu.addItem("High", [this]() {
+	logLevelMenu.addItem("High", true, [this]() {
 		m_simulation->setLogLevel(LogLevel::HIGH);
 		std::cout << "-- Log level is set to high --" << std::endl;
 		goOn("Press <ENTER> to go back...");
@@ -122,8 +152,11 @@ void UserInterface::setupLogLevelMenu()
 void UserInterface::setupTrainMenu()
 {
 	trainMenu.setHead("Train menu");
-	trainMenu.addItem("Search train by id", [this]() {
+	trainMenu.addItem("Search train by id", true, [this]() {
 		displayTrain();
+	});
+	trainMenu.addItem("Display train history", true, [this]() {
+		displayTrainHistory();
 	});
 }
 
@@ -160,7 +193,7 @@ void UserInterface::changeInterval()
 {
 	Time newInterval = getTimeInput("New interval: ");
 	m_simulation->changeInterval(newInterval);
-	std::cout << "-- interval is changed --" << std::endl;
+	//std::cout << "-- interval is changed --" << std::endl;
 }
 
 void UserInterface::changeStartTime()
@@ -324,6 +357,27 @@ void UserInterface::displayTrain()
 	{
 		std::cout << "No train found" << std::endl;
 	}
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayTrainHistory()
+{
+	int trainId = getIntInput("Train id: ");
+
+	std::vector<std::shared_ptr<Event>> events = m_simulation->getTrainEvents(trainId);
+
+	if (!events.empty())
+	{
+		//std::for_each(events.cbegin(), events.cend(), std::bind(printEvent, std::cout, std::placeholders::_1));
+		for (auto e : events)
+		{
+			printEvent(std::cout, e);
+			std::cout << std::endl;
+		}	
+	}	
+	else
+		std::cout << "No events found" << std::endl;
 
 	goOn("Press <ENTER> for menu...");
 }

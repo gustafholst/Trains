@@ -48,14 +48,17 @@ void Simulation::setupSimulation(RailwayCompany * p_railway)
 void Simulation::startSimulation()
 {
 	//process all events up until start time
-	while (m_eventQueue.top()->getTime() <= m_startTime)
+	while (!m_eventQueue.empty() && m_eventQueue.top()->getTime() <= m_startTime)
 	{
 		std::shared_ptr<Event> next = m_eventQueue.top();
 		m_eventQueue.pop();   //remove event from queue
 		next->processEvent();
-		//m_currentTime = next->getTime();   //update clock
+		m_eventsHistory.push_back(next); //store a pointer to the event in history (for writing to file/presenting stats/displaying info about a specific vehicle or train)
 	}
 	m_currentTime = m_startTime;
+
+	if (m_eventQueue.size() == 0)
+		m_finished = true;
 }
 
 std::shared_ptr<Event> Simulation::getNextEvent()
@@ -65,9 +68,12 @@ std::shared_ptr<Event> Simulation::getNextEvent()
 		std::shared_ptr<Event> next = m_eventQueue.top();
 		m_eventQueue.pop();   //remove event from queue
 		next->processEvent();
+		m_eventsHistory.push_back(next); //store a pointer to the event in history (for writing to file/presenting stats/displaying info about a specific vehicle or train)
 		m_currentTime = next->getTime();   //update clock
 		return next;
 	}
+
+	m_finished = true;
 
 	return nullptr;
 }
@@ -75,7 +81,8 @@ std::shared_ptr<Event> Simulation::getNextEvent()
 std::vector<std::shared_ptr<Event>> Simulation::getNextInterval()
 {
 	std::vector<std::shared_ptr<Event>> latestEvents;
-	m_currentTime += m_interval;  //update clock
+	m_currentTime += m_interval;  //update clock, run next interval
+
 	while (!m_eventQueue.empty())
 	{
 		std::shared_ptr<Event> next = m_eventQueue.top();
@@ -84,8 +91,41 @@ std::vector<std::shared_ptr<Event>> Simulation::getNextInterval()
 
 		m_eventQueue.pop();   //remove event from queue
 		next->processEvent();
-		latestEvents.push_back(next);
+		m_eventsHistory.push_back(next); //store a pointer to the event in history (for writing to file/presenting stats/displaying info about a specific vehicle or train)
+		latestEvents.push_back(next);  //pointers for displaying to the user
 	}
 
-	return latestEvents;
+	if (m_eventQueue.size() == 0)
+		m_finished = true;
+
+	return latestEvents;   
+}
+
+void Simulation::finishSimulation()
+{
+	while (!isFinished())
+	{
+		std::shared_ptr<Event> next = m_eventQueue.top();
+		m_eventQueue.pop();   //remove event from queue
+		next->processEvent();
+		m_currentTime = next->getTime(); //update clock  (so that current time displays as the time of the last event processed)
+		m_eventsHistory.push_back(next); //store a pointer to the event in history (for writing to file/presenting stats/displaying info about a specific vehicle or train)
+		if (m_eventQueue.empty())
+			m_finished = true;
+	}
+}
+
+const std::vector<std::shared_ptr<Event>> Simulation::getTrainEvents(const int trainId) const
+{
+	std::vector<std::shared_ptr<Event>> events;
+
+	// find all events concerning the searched train
+	for (auto e : m_eventsHistory)
+	{
+		auto train = e->getTrain();
+		if (train->getId() == trainId)
+			events.push_back(e);
+	}
+
+	return events;
 }

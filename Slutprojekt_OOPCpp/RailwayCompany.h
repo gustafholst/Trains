@@ -46,7 +46,6 @@ public:
 	}
 
 	void createTrains();
-	//void scheduleTrains(Simulation *sim);             remove!!!!!
 
 private:
 	std::vector<TrainStation> m_stations;

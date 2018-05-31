@@ -30,9 +30,12 @@ public:
 	LogLevel getLogLevel() const { return m_logLevel; }
 	void setLogLevel(LogLevel p_logLevel) { m_logLevel = p_logLevel; }
 	std::shared_ptr<Event> getNextEvent();
-	std::vector<std::shared_ptr<Event>> getNextInterval();
+	std::vector<std::shared_ptr<Event>> getNextInterval();   
+	void finishSimulation();
+	const std::vector<std::shared_ptr<Event>> getAllEvents() const { return m_eventsHistory; }
+	const std::vector<std::shared_ptr<Event>> getTrainEvents(const int trainId) const;
 
-	//void incomplete() { inc++; }
+	bool isFinished() { return m_finished; }
 
 private:
 	Time m_currentTime;
@@ -40,10 +43,10 @@ private:
 	Time m_startTime;
 	Time m_endTime;
 	LogLevel m_logLevel;
-
-	//int inc = 0;
+	bool m_finished = false;  //use a boolean to separate the state when queue is empty at the start from when it has been emptied during simulation
 
 	std::priority_queue<std::shared_ptr<Event>, std::vector< std::shared_ptr<Event>>, EventComparison> m_eventQueue;
+	std::vector<std::shared_ptr<Event>> m_eventsHistory;
 };
 
 #endif //!SIMULATION_H

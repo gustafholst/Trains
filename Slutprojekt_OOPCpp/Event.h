@@ -24,6 +24,7 @@ public:
 	virtual void processEvent() = 0;
 
 	Time getTime() const { return m_time; }
+	const std::shared_ptr<Train> getTrain() const { return m_train; }  //which train does this event handle?
 
 	virtual std::string toString() const;
 

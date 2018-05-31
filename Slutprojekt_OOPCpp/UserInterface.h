@@ -30,6 +30,7 @@ private:
 	Menu vehicleMenu;
 
 	void seedSimulation();  //creates trains from the timetable and puts inital events in the event queue
+	void runSimulation();
 
 	void setupMenus();
 	void setupStartMenu();
@@ -52,6 +53,7 @@ private:
 	void displayAllStationNames();
 	void displayAllVehicles();
 	void displayTrain();
+	void displayTrainHistory();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);

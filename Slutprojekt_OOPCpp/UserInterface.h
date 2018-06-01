@@ -28,6 +28,7 @@ private:
 	Menu trainMenu;
 	Menu stationMenu;
 	Menu vehicleMenu;
+	std::vector<std::shared_ptr<Train>> m_allTrains;   //for statistics when simulation is finished
 
 	void seedSimulation();  //creates trains from the timetable and puts inital events in the event queue
 	void runSimulation();

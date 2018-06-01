@@ -6,10 +6,11 @@
 #include <memory>
 #include <sstream>
 #include "Time.h"
-#include "Train.h"
+//#include "Train.h"
 
 class Simulation;
 class RailwayCompany;
+class Train;
 
 class Event
 {

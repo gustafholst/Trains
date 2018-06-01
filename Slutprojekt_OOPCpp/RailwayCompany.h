@@ -39,6 +39,8 @@ public:
 	std::vector<const TrainStation*> getAllStations() const;
 	std::vector<std::string> getAllStationNames() const;
 
+	const std::vector<std::shared_ptr<Train>> getAllTrains() const;
+
 	void printTimetable() {
 		std::cout << "Timetable" << std::endl;
 		for (auto &r : m_timetable)

@@ -1,8 +1,11 @@
 
-
+#include <fstream>
 #include "Simulation.h"
 #include "TrainStation.h"
 #include "RailwayCompany.h"
+
+std::string LOG_FILE = "Trainsim.log";
+void printEvent(std::ostream & os, std::shared_ptr<const Event> e);  //forward declaration (function def in UserInterface.cpp)
 
 Simulation::~Simulation()
 {
@@ -128,4 +131,26 @@ const std::vector<std::shared_ptr<Event>> Simulation::getTrainEvents(const int t
 	}
 
 	return events;
+}
+
+void Simulation::writeToFile()
+{
+	std::ofstream outFile(LOG_FILE);
+
+	outFile << "#############################" << std::endl;
+	outFile << "Simulation log"<< std::endl;
+	outFile << "start time: " + formatTime(m_startTime) << std::endl;
+	outFile << "end time: " + formatTime(m_endTime) << std::endl;
+	outFile << "#############################" << std::endl << std::endl;
+
+	if (outFile)
+	{
+		for (auto event : m_eventsHistory)
+		{
+			printEvent(outFile, event);
+			outFile << std::endl;
+		}
+	}
+
+	outFile.close();
 }

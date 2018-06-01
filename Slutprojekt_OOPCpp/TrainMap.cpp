@@ -2,24 +2,21 @@
 #include <fstream>
 #include <iostream>
 #include "TrainMap.h"
+#include "constants.h"
 
-TrainMap::TrainMap()
-{
-}
-
-
-TrainMap::~TrainMap()
-{
-}
+std::string TRAIN_MAP_FILE = "TrainMap.txt";
 
 int TrainMap::operator()(const std::string & a, const std::string & b)
 {
-	return findDistance(a,b);
+	if (m_distances[a][b] == 0)        // if dep - arr is undefined
+		return m_distances[b][a];	   //return arr -dep
+
+	return m_distances[a][b];
 }
 
 void TrainMap::readFromFile()
 {
-	std::ifstream inFile("TrainMap.txt");
+	std::ifstream inFile(TRAIN_MAP_FILE);
 	if (inFile.is_open())
 	{
 		std::string tmpDep, tmpArr;
@@ -34,7 +31,7 @@ void TrainMap::readFromFile()
 		}
 	}
 	else {
-		throw std::ios_base::failure("File 'TrainMap.txt' could not be opened");
+		throw std::runtime_error("File " + TRAIN_MAP_FILE + " could not be opened");
 	}
 }
 
@@ -45,12 +42,4 @@ void TrainMap::printAll()
 		for (auto &y : x.second)
 			std::cout << x.first << " - " << y.first << " " << y.second << std::endl;
 	}
-}
-
-int TrainMap::findDistance(const std::string & a, const std::string & b)
-{
-	if (m_distances[a][b] == 0)        // if dep - arr is undefined
-		return m_distances[b][a];	   //return arr -dep
-	
-	return m_distances[a][b];
 }

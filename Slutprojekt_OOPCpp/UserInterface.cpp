@@ -1,7 +1,9 @@
 
 #include <functional>
 #include <algorithm>
+#include <numeric>
 #include <sstream>
+#include <iomanip>
 #include "UserInterface.h"
 #include "auxilliary.h"
 
@@ -24,6 +26,9 @@ void UserInterface::runSimulation()
 	while (simMenu.display(m_simulation) && !m_simulation->isFinished());
 	
 	//### simulation is finished ###
+
+	m_simulation->writeToFile();    //print log file with all the events
+	m_allTrains = m_railway->getAllTrains();  //get pointers to all trains
 
 	//disable menu items only applicable during simulation
 	for (size_t item = 0; item < 4; ++item)
@@ -78,7 +83,38 @@ void UserInterface::setupSimulationMenu()
 		logLevelMenu.display(m_simulation);
 	});
 	simMenu.addItem("Print statistics", false, [this]() {     //only display when simulation is finished
-		//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+		int numDelayed = 0, numNoDeparture = 0;
+		Time totalDelay(0);
+		Time totalDepDelay(0);
+		
+		for (auto train : m_allTrains)
+		{
+			Time delay = train->getDelay();
+			if (delay > 0)
+			{
+				totalDelay += delay;   //accumulate total delay (arrival delay)
+				++numDelayed;     //count number of delayed trains
+			}
+
+			totalDepDelay += train->getDepartureDelay();  //accumulate total departure delay
+
+			if (train->getState() != TrainState::FINISHED)  //if trains state is not finished -> it got stuck in assembled or ready state
+				++numNoDeparture;
+		}
+
+		sepLine(55, '=');
+		std::cout  << "Simulation statistics" << std::endl;
+		sepLine(21, '-');
+		std::cout << std::left << std::setw(50) << "Simulation end time:" << std::right << std::setw(5) << (m_simulation->getCurrentTime()) << std::endl;
+		std::cout << std::left << std::setw(50) << "Number of delayed trains:" << std::right << std::setw(5) << numDelayed << std::endl;
+		std::cout << std::left << std::setw(50) << "Number of trains that never left the station:" << std::right << std::setw(5) << numNoDeparture << std::endl;
+		std::cout << std::left << std::setw(50) << "Total delay time:" << std::right << std::setw(5) << formatTime(totalDelay) << std::endl;
+		std::cout << std::left << std::setw(50) << "Total delay time at departure:" << std::right << std::setw(5) << formatTime(totalDepDelay) << std::endl;
+		sepLine(55, '=');
+		std::cout << "see submenus (station/train/vehicle) for more details" << std::endl;
+
+		goOn("Press <ENTER> for menu...");
 	});
 	simMenu.addItem("View all events", false, [this]() {     //only display when simulation is finished
 		std::vector<std::shared_ptr<Event>> events = m_simulation->getAllEvents();

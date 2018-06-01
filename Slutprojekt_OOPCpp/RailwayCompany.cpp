@@ -5,10 +5,12 @@
 #include <tuple>
 #include "RailwayCompany.h"
 
+std::string TRAIN_FILE = "Trains.txt";
+std::string STATIONS_FILE = "TrainStations.txt";
 
 void RailwayCompany::loadStations()
 {
-	std::ifstream inFile("TrainStations.txt");
+	std::ifstream inFile(STATIONS_FILE);
 	if (inFile.is_open())
 	{
 		TrainStation tmpStation;
@@ -21,13 +23,13 @@ void RailwayCompany::loadStations()
 		}		
 	}
 	else {
-		throw std::ios_base::failure("File 'Trainstations.txt' could not be opened");
+		throw std::runtime_error("File " + STATIONS_FILE + " could not be opened");
 	}
 }
 
 void RailwayCompany::loadTimetable()
 {
-	std::ifstream inFile("Trains.txt");
+	std::ifstream inFile(TRAIN_FILE);
 
 	if (inFile.is_open())
 	{
@@ -42,7 +44,7 @@ void RailwayCompany::loadTimetable()
 	}
 	else
 	{
-		throw std::ios_base::failure("File 'Trains.txt' could not be opened");
+		throw std::runtime_error("File " + TRAIN_FILE + " could not be opened");
 	}
 }
 
@@ -159,6 +161,23 @@ std::vector<std::string> RailwayCompany::getAllStationNames() const
 		names.push_back(station.getName());
 
 	return names;
+}
+
+const std::vector<std::shared_ptr<Train>> RailwayCompany::getAllTrains() const
+{
+	std::vector<std::shared_ptr<Train>> allTrains;
+
+	//get all trains from all stations
+	for (const TrainStation &station : m_stations)
+	{
+		std::vector<std::shared_ptr<Train>> trains = station.getTrains();
+		std::copy(trains.cbegin(), trains.cend(), std::back_inserter(allTrains));
+	}
+
+	//get trains currently in transit (if any)
+	std::copy(m_runningTrains.cbegin(), m_runningTrains.cend(), std::back_inserter(allTrains));
+
+	return allTrains;
 }
 
 void RailwayCompany::createTrains()

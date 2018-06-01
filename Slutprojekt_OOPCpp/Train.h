@@ -23,8 +23,9 @@ public:
 	int getId() const { return m_id; }
 
 	Time getDelay() const { return m_delay; }
+	Time getDepartureDelay() const { return m_actualDepTime - m_depTime; }
 	Time getActualDepTime() const { return m_actualDepTime; }
-	Time getActualArrTime() const { return m_arrTime + m_delay; }   //calculate arrival time based on speed!!
+	Time getActualArrTime() const { return m_arrTime + m_delay; }   
 	int getAvgSpeed() const { return m_avgSpeed; }
 
 	void setState(const TrainState p_newState) { m_state = p_newState; }

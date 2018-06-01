@@ -9,21 +9,16 @@
 class TrainMap
 {
 public:
-	TrainMap();
-	~TrainMap();
+	TrainMap() = default;
 
 	int operator() (const std::string &a, const std::string &b);
 
 	void readFromFile();
 
-	void printAll();
+	void printAll();   //for debug purpose only
 private:
 	std::map<std::string, std::map<std::string, int>> m_distances;
-
-	int findDistance(const std::string &a, const std::string &b);     //not necessary!?!?!?!?!
 };
-
-
 
 #endif // !TRAINMAP_H
 

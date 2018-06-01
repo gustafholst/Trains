@@ -6,6 +6,7 @@
 #include <queue>
 #include "Event.h"
 #include "Time.h"
+#include "constants.h"
 
 
 class Simulation
@@ -36,6 +37,8 @@ public:
 	const std::vector<std::shared_ptr<Event>> getTrainEvents(const int trainId) const;
 
 	bool isFinished() { return m_finished; }
+
+	void writeToFile();
 
 private:
 	Time m_currentTime;

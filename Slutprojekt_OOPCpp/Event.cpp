@@ -13,16 +13,12 @@ Event::~Event()
 
 std::string Event::toString() const
 {
-	/*std::ostringstream stream;
-	printTrain(stream, m_train);
-	stream << '\n' << m_statusString;*/
-	//return stream.str();
 	return m_statusStream.str();
 }
 
 std::ostream & operator<<(std::ostream & outstream, const Event & e)
 {
-	outstream << e.toString();
+	outstream << e.toString();    //call classmember toString in order to access m_statusStream
 	return outstream;
 }
 
@@ -40,12 +36,12 @@ void AssemblyEvent::processEvent()
 			std::shared_ptr<Event> nextEvent = std::make_shared<ReadyEvent>(m_simulation, m_railway, newTime, m_train);
 			m_simulation->scheduleEvent(nextEvent);
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);  //store current snapshot of train in status stream
-			m_statusStream << "\nnow assembled, arriving to the platform at " + formatTime(newTime);
+			m_statusStream << std::endl << "now assembled, arriving to the platform at " + formatTime(newTime);
 		}
 		else
 		{
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);  //store current snapshot of train in status stream
-			m_statusStream << "\nnow assembled, will not arrive at platform";
+			m_statusStream << std::endl << "now assembled, will not arrive at platform";
 		}
 	}
 	else
@@ -58,12 +54,12 @@ void AssemblyEvent::processEvent()
 			std::shared_ptr<Event> nextEvent = std::make_shared<AssemblyEvent>(m_simulation, m_railway, newTime, m_train); 
 			m_simulation->scheduleEvent(nextEvent);
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);
-			m_statusStream << "\nnow incomplete, next try at " + formatTime(newTime);
+			m_statusStream << std::endl << "now incomplete, next try at " + formatTime(newTime);
 		}
 		else
 		{
 			printTrain(m_statusStream, m_train, LogLevel::HIGH);
-			m_statusStream << "\nnow incomplete, no more tries";
+			m_statusStream << std::endl << "now incomplete, no more tries";
 		}
 	}
 }
@@ -77,11 +73,11 @@ void ReadyEvent::processEvent()
 		std::shared_ptr<Event> nextEvent = std::make_shared<DepartureEvent>(m_simulation, m_railway, newTime, m_train);
 		m_simulation->scheduleEvent(nextEvent);
 		printTrain(m_statusStream, m_train, LogLevel::HIGH);
-		m_statusStream << "\nnow ready, leaving station at " + formatTime(newTime);
+		m_statusStream << std::endl << "now ready, leaving station at " + formatTime(newTime);
 	}
 	else {
 		printTrain(m_statusStream, m_train, LogLevel::HIGH);
-		m_statusStream << "\nnow ready, will not leave station";
+		m_statusStream << std::endl << "now ready, will not leave station";
 	}
 }
 
@@ -124,7 +120,7 @@ void DepartureEvent::processEvent()
 
 	//store event info
 	printTrain(m_statusStream, m_train, LogLevel::HIGH);
-	m_statusStream << "\nhas left the station, travelling at speed " + std::to_string(approvedSpeed) + " km/h (" + std::to_string(m_train->getMaxSpeed()) + ')';
+	m_statusStream << std::endl << "has left the station, travelling at speed " + std::to_string(approvedSpeed) + " km/h (" + std::to_string(m_train->getMaxSpeed()) + ')';
 }
 
 void ArriveEvent::processEvent()
@@ -148,7 +144,7 @@ void ArriveEvent::processEvent()
 
 	//store event info
 	printTrain(m_statusStream, m_train, LogLevel::HIGH);
-	m_statusStream << "\nhas arrived at the platform, disassembly at " + formatTime(newTime);
+	m_statusStream << std::endl << "has arrived at the platform, disassembly at " + formatTime(newTime);
 }
 
 void FinishEvent::processEvent()
@@ -170,5 +166,5 @@ void FinishEvent::processEvent()
 	}
 		
 	printTrain(m_statusStream, m_train, LogLevel::HIGH);
-	m_statusStream << "\nis now disassembled";
+	m_statusStream << std::endl << "is now disassembled";
 }

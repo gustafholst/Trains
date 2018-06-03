@@ -1,5 +1,5 @@
 
-
+#include <cmath>
 #include "Event.h"
 #include "Simulation.h"
 #include "RailwayCompany.h"
@@ -100,7 +100,7 @@ void DepartureEvent::processEvent()
 	int approvedSpeed;
 	if (duration > 0) 
 	{
-		int neededSpeed = static_cast<int>((distance / static_cast<float>(duration.getMins())) * 60);   // calculate with flotaing point for precision. km/min * 60 -> km/h
+		int neededSpeed = static_cast<int>(std::round((distance / static_cast<float>(duration.getMins())) * 60));   // calculate with flotaing point for precision. km/min * 60 -> km/h
 		approvedSpeed = m_train->setAvgSpeed(neededSpeed);  //setAvgSpeed returns the approved speed of specific train
 	}
 	else // train is very delayed
@@ -109,7 +109,7 @@ void DepartureEvent::processEvent()
 	}
 
 	//calculate arrival time
-	Time actualDuration = static_cast<int>((distance / static_cast<float>(approvedSpeed)) *60);  // km / (km/h) = h , h * 60 = minutes   using implicit conversion with constructor Time (int minutes)
+	Time actualDuration = static_cast<int>(std::round((distance / static_cast<float>(approvedSpeed)) *60));  // km / (km/h) = h , h * 60 = minutes   using implicit conversion with constructor Time (int minutes)
 	Time delay = (m_train->getActualDepTime() + actualDuration) - m_train->getArrTime();
 	m_train->setDelay(delay);
 	Time newTime = m_train->getActualDepTime() + actualDuration;  //time for arrival = time of departure + actual travel time

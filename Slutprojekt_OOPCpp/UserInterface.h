@@ -55,6 +55,8 @@ private:
 	void displayAllVehicles();
 	void displayTrain();
 	void displayTrainHistory();
+	void displayStatistics();
+	void displayEventsHistory();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);

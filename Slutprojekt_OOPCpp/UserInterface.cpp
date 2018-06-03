@@ -21,6 +21,7 @@ void UserInterface::seedSimulation()
 void UserInterface::runSimulation()
 {
 	m_simulation->setupSimulation(m_railway);  //place assembly events for all trains in the event queue
+	m_railway->makeInitialVehicleInventory();  //count vehicles at every station (for comparison afterwards)
 	m_simulation->startSimulation();           //process all events up until start time (if any)
 
 	while (simMenu.display(m_simulation) && !m_simulation->isFinished());
@@ -83,48 +84,10 @@ void UserInterface::setupSimulationMenu()
 		logLevelMenu.display(m_simulation);
 	});
 	simMenu.addItem("Print statistics", false, [this]() {     //only display when simulation is finished
-
-		int numDelayed = 0, numNoDeparture = 0;
-		Time totalDelay(0);
-		Time totalDepDelay(0);
-		
-		for (auto train : m_allTrains)
-		{
-			Time delay = train->getDelay();
-			if (delay > 0)
-			{
-				totalDelay += delay;   //accumulate total delay (arrival delay)
-				++numDelayed;     //count number of delayed trains
-			}
-
-			totalDepDelay += train->getDepartureDelay();  //accumulate total departure delay
-
-			if (train->getState() != TrainState::FINISHED)  //if trains state is not finished -> it got stuck in assembled or ready state
-				++numNoDeparture;
-		}
-
-		sepLine(55, '=');
-		std::cout  << "Simulation statistics" << std::endl;
-		sepLine(21, '-');
-		std::cout << std::left << std::setw(50) << "Simulation end time:" << std::right << std::setw(5) << (m_simulation->getCurrentTime()) << std::endl;
-		std::cout << std::left << std::setw(50) << "Number of delayed trains:" << std::right << std::setw(5) << numDelayed << std::endl;
-		std::cout << std::left << std::setw(50) << "Number of trains that never left the station:" << std::right << std::setw(5) << numNoDeparture << std::endl;
-		std::cout << std::left << std::setw(50) << "Total delay time:" << std::right << std::setw(5) << formatTime(totalDelay) << std::endl;
-		std::cout << std::left << std::setw(50) << "Total delay time at departure:" << std::right << std::setw(5) << formatTime(totalDepDelay) << std::endl;
-		sepLine(55, '=');
-		std::cout << "see submenus (station/train/vehicle) for more details" << std::endl;
-
-		goOn("Press <ENTER> for menu...");
+		displayStatistics();
 	});
 	simMenu.addItem("View all events", false, [this]() {     //only display when simulation is finished
-		std::vector<std::shared_ptr<Event>> events = m_simulation->getAllEvents();
-		for (auto e : events)
-		{
-			printEvent(std::cout, e);
-			std::cout << '\n';
-		}
-			
-		goOn("Press <ENTER> for menu...");
+		displayEventsHistory();
 	});
 	simMenu.addItem("Train menu...", true, [this]() {
 		while (trainMenu.display(m_simulation));    //keep displaying until return option is chosen
@@ -414,6 +377,72 @@ void UserInterface::displayTrainHistory()
 	}	
 	else
 		std::cout << "No events found" << std::endl;
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayStatistics()
+{
+	int numDelayed = 0, numNoDeparture = 0;
+	Time totalDelay(0);
+	Time totalDepDelay(0);
+
+	for (auto train : m_allTrains)
+	{
+		Time delay = train->getDelay();
+		if (train->getState() == TrainState::FINISHED)
+		{
+			if (delay > 0)  //
+			{
+				totalDelay += delay;   //accumulate total delay (arrival delay)
+				++numDelayed;     //count number of delayed trains (arrival delay)
+			}
+
+			totalDepDelay += train->getDepartureDelay();  //accumulate total departure delay
+		}
+		else  //if trains state is not finished -> it got stuck in assembled or ready state
+		{
+			++numNoDeparture;
+		}
+	}
+
+	
+
+
+	sepLine(55, '=');
+	std::cout << "Simulation statistics" << std::endl;
+	sepLine(21, '-');
+	std::cout << std::left << std::setw(50) << "Simulation end time:" << std::right << std::setw(5) << (m_simulation->getCurrentTime()) << std::endl;
+	std::cout << std::left << std::setw(50) << "Number of delayed trains:" << std::right << std::setw(5) << numDelayed << std::endl;
+	std::cout << std::left << std::setw(50) << "Number of trains that never left the station:" << std::right << std::setw(5) << numNoDeparture << std::endl;
+	std::cout << std::left << std::setw(50) << "Total delay time:" << std::right << std::setw(5) << formatTime(totalDelay) << std::endl;
+	std::cout << std::left << std::setw(50) << "Total delay time at departure:" << std::right << std::setw(5) << formatTime(totalDepDelay) << std::endl;
+
+	//print table displaying vehicle count at every station
+	std::cout << std::endl << "Number of vehicles before and after simulation" << std::endl;
+	std::cout << std::left << std::setw(20) << "Station" << std::right << std::setw(12) << "Before" << std::setw(12) << "After" << std::endl;
+	std::cout << std::left << std::setw(20) << "-------" << std::right << std::setw(12) << "------" << std::setw(12) << "-----" << std::endl;
+	const std::map<std::string, int> initialVehicleCount = m_railway->getInitialVehicleCount();
+	std::for_each(initialVehicleCount.cbegin(), initialVehicleCount.cend(), [this](const std::pair<std::string, int> &station) {
+		TrainStation* s = m_railway->getStation(station.first);
+		int finalCount = s->getNumVehicles();
+		std::cout << std::left << std::setw(20) << station.first << std::right << std::setw(12) << station.second << std::setw(12) << finalCount << std::endl;
+	});
+
+	sepLine(55, '=');
+	std::cout << "see submenus (station/train/vehicle) for more details" << std::endl;
+
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayEventsHistory()
+{
+	std::vector<std::shared_ptr<Event>> events = m_simulation->getAllEvents();
+	for (auto e : events)
+	{
+		printEvent(std::cout, e);
+		std::cout << '\n';
+	}
 
 	goOn("Press <ENTER> for menu...");
 }

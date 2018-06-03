@@ -134,7 +134,7 @@ void RailwayCompany::removeFromTransit(std::shared_ptr<Train> train)
 		m_runningTrains.erase(found);
 }
 
-TrainStation * RailwayCompany::getStation(std::string & sName)
+TrainStation * RailwayCompany::getStation(const std::string & sName) 
 {
 	for (TrainStation &s : m_stations)
 	{
@@ -187,5 +187,16 @@ void RailwayCompany::createTrains()
 		std::string stationName = route.getDepStation();
 		TrainStation *station = getStation(stationName);
 		station->addTrain(route);  //implicit conversion route -> train
+	}
+}
+
+void RailwayCompany::makeInitialVehicleInventory()
+{
+	for (auto &s : m_stations)
+	{
+		std::string name = s.getName();
+		int numVehicles = s.getNumVehicles();
+
+		m_vehicleCount[name] = numVehicles;
 	}
 }

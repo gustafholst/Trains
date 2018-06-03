@@ -34,7 +34,7 @@ public:
 
 	int getDistance(const std::string &depStation, const std::string &arrStation) { return distance(depStation, arrStation); }
 
-	TrainStation* getStation(std::string &sName);
+	TrainStation* getStation(const std::string &sName);
 	
 	std::vector<const TrainStation*> getAllStations() const;
 	std::vector<std::string> getAllStationNames() const;
@@ -49,11 +49,15 @@ public:
 
 	void createTrains();
 
+	void makeInitialVehicleInventory();
+	const std::map<std::string, int> getInitialVehicleCount() const { return m_vehicleCount; }
+
 private:
 	std::vector<TrainStation> m_stations;
 	std::vector<Route> m_timetable;
 	std::list<std::shared_ptr<Train>> m_runningTrains;
 	TrainMap distance;   //functor
+	std::map<std::string, int> m_vehicleCount;   //keep track of how many vehicles are att the station at beginning of simulation
 };
 
 #endif // RAILWAYCOMPANY_H

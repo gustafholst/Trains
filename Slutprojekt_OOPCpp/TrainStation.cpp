@@ -24,30 +24,6 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 		m_vehicles.erase(it);   //remove the vehicle from this staion
 		return foundVehicle;
 	}
-
-
-	////find first element of type
-	//auto first = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](std::shared_ptr<Vehicle> v) {
-	//	return static_cast<int>(v->getType()) == static_cast<int>(type);
-	//});
-
-	//if (first != m_vehicles.cend())
-	//{
-	//	//find last vehicle of same type 
-
-	//	auto last = std::find_if(first, m_vehicles.cend(), [type](std::shared_ptr<Vehicle> v) {
-	//		return static_cast<int>(v->getType()) != static_cast<int>(type);
-	//	});
-
-	//	last--;  //one step back to point to last of type
-	//	if (first != last)   //at least one vehicle of this type is present
-	//	{
-	//		auto it = min_element(first, last);
-	//		std::shared_ptr<Vehicle> foundVehicle = *it;
-	//		m_vehicles.erase(it);   //remove the vehicle from this staion
-	//		return foundVehicle;
-	//	}
-	//}
 	
 	return nullptr;
 }
@@ -55,13 +31,12 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 void TrainStation::parkVehicle(std::shared_ptr<Vehicle> vehicle)
 {
 	//place vehicle first in the section of vehicles of same type
-	auto firstOfType = find_if(m_vehicles.begin(), m_vehicles.end(), [vehicle](std::shared_ptr<Vehicle> v) {
+	/*auto firstOfType = find_if(m_vehicles.begin(), m_vehicles.end(), [vehicle](std::shared_ptr<Vehicle> v) {
 		return v->getType() == vehicle->getType();
 	});
 
-	//auto range = std::equal_range(m_vehicles.begin(), m_vehicles.end(), vehicle, vehicleCompare);
-
-	m_vehicles.insert(firstOfType, vehicle);
+	m_vehicles.insert(firstOfType, vehicle);*/
+	m_vehicles.push_back(vehicle);
 }
 
 std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const

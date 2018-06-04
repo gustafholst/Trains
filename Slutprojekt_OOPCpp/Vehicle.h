@@ -28,6 +28,7 @@ protected:
 };
 
 
+// ########### derived classes ################################
 
 class SeatedCoach : public Vehicle {
 public:

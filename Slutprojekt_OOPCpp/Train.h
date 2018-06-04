@@ -36,10 +36,12 @@ public:
 	std::shared_ptr<Vehicle> decoupleVehicle();
 
 	std::shared_ptr<Vehicle> locateVehicle(const int id) const;
+	bool containedVehicle(const int id) const;
 
 private:
 	TrainState m_state;
 	std::vector<std::shared_ptr<Vehicle>> m_vehicles;
+	std::vector<int> m_vehicleIds;    //store ids of vehicles for tracking vehicle movement 
 	Time m_delay;
 	Time m_actualDepTime;
 	int m_avgSpeed;

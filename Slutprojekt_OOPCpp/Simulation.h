@@ -35,6 +35,7 @@ public:
 	void finishSimulation();
 	const std::vector<std::shared_ptr<Event>> getAllEvents() const { return m_eventsHistory; }
 	const std::vector<std::shared_ptr<Event>> getTrainEvents(const int trainId) const;
+	const std::vector<std::shared_ptr<Event>> getVehicleEvents(const int vehicleId) const;
 
 	bool isFinished() { return m_finished; }
 

@@ -133,6 +133,21 @@ const std::vector<std::shared_ptr<Event>> Simulation::getTrainEvents(const int t
 	return events;
 }
 
+const std::vector<std::shared_ptr<Event>> Simulation::getVehicleEvents(const int vehicleId) const
+{
+	std::vector<std::shared_ptr<Event>> events;
+
+	// find all events concerning the searched train
+	for (auto e : m_eventsHistory)
+	{
+		auto train = e->getTrain();
+		if (train->containedVehicle(vehicleId))
+			events.push_back(e);
+	}
+
+	return events;
+}
+
 void Simulation::writeToFile()
 {
 	std::ofstream outFile(LOG_FILE);

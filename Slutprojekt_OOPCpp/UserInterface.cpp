@@ -35,8 +35,11 @@ void UserInterface::runSimulation()
 	for (size_t item = 0; item < 4; ++item)
 		simMenu.disableItem(item);
 
-	simMenu.enableItem(5);  //enable print statistics option
-	simMenu.enableItem(6);  //enable view all events option
+	simMenu.enableItem(5);     //enable print statistics option
+	simMenu.enableItem(6);     //enable view all events option
+	trainMenu.enableItem(3);   //enable view delayed trains option
+	trainMenu.enableItem(4);   //trains that never left station
+	vehicleMenu.enableItem(2);  //enable vehicle history option
 
 	while (simMenu.display(m_simulation));   //keep displaying menu until user is done
 }
@@ -109,6 +112,16 @@ void UserInterface::setupVehicleMenu()
 	vehicleMenu.addItem("Show all vehicles", true, [this]() {
 		displayAllVehicles();
 	});
+	vehicleMenu.addItem("View vehicle history", false, [this]() {
+		int searched = getIntInput("Input id number of vehicle: ", 0);
+		const std::vector<std::shared_ptr<Event>> events = m_simulation->getVehicleEvents(searched);
+		for (auto &e : events)
+		{
+			printEvent(std::cout, e);
+			std::cout << std::endl;
+		}
+		goOn("Press <ENTER> to for menu...");
+	});
 	vehicleMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
@@ -154,8 +167,35 @@ void UserInterface::setupTrainMenu()
 	trainMenu.addItem("Search train by id", true, [this]() {
 		displayTrain();
 	});
-	trainMenu.addItem("Display train history", true, [this]() {
+	trainMenu.addItem("View train history", true, [this]() {
 		displayTrainHistory();
+	});
+	trainMenu.addItem("Change log level", true, [this]() {
+		logLevelMenu.display(m_simulation);
+	});
+	trainMenu.addItem("View delayed trains", false, [this]() {
+		for (auto &t : m_allTrains)
+		{
+			if (t->getDelay() > 0 && t->getState() == TrainState::FINISHED)
+			{
+				printTrain(std::cout, t, m_simulation->getLogLevel());
+				sepLine(50, '-');
+			}
+		}
+
+		goOn("Press <ENTER> for menu...");
+	});
+	trainMenu.addItem("View trains that never left the station", false, [this]() {
+		for (auto &t : m_allTrains)
+		{
+			if (t->getState() != TrainState::FINISHED)
+			{
+				printTrain(std::cout, t, m_simulation->getLogLevel());
+				sepLine(50, '-');
+			}
+		}
+
+		goOn("Press <ENTER> for menu...");
 	});
 }
 
@@ -262,7 +302,7 @@ void UserInterface::displayStation()
 	const TrainStation *station = m_railway->getStation(sName);
 	if (station != nullptr)
 	{
-		printStation(std::cout, station, m_simulation->getLogLevel());
+		printStation(std::cout, station, m_simulation->getLogLevel());   //print station info according to current log level
 	}
 	else
 	{
@@ -304,10 +344,9 @@ void UserInterface::displayAllStationNames()
 void UserInterface::displayAllVehicles()
 {
 	std::vector<std::shared_ptr<Vehicle>> allVehicles = m_railway->getAllVehicles();
-	//for_each(allVehicles.cbegin(), allVehicles.cend(), printVehicle);
 	for (auto &v : allVehicles)
 	{
-		printVehicle(std::cout, v, m_simulation->getLogLevel());
+		printVehicle(std::cout, v, m_simulation->getLogLevel());   //print vehicle info according to current log level
 		std::cout << std::endl;
 	}
 
@@ -321,36 +360,8 @@ void UserInterface::displayTrain()
 
 	if (train)
 	{
-		printTrain(std::cout, train, m_simulation->getLogLevel());   //print traininfo according to current log level
+		printTrain(std::cout, train, m_simulation->getLogLevel());   //print train info according to current log level
 		std::cout << std::endl;
-
-		//if log level high, also print info about all vehicles in the train
-		if (m_simulation->getLogLevel() == LogLevel::HIGH)
-		{
-			TrainState s = train->getState();
-			if (s != TrainState::NOT_ASSEMBLED || s != TrainState::FINISHED)
-			{
-				std::vector<std::shared_ptr<Vehicle>> vehicles = train->getVehicles();
-				for (auto v : vehicles)
-				{
-					if (v)
-					{
-						printVehicle(std::cout, v, m_simulation->getLogLevel());
-						std::cout << std::endl;
-					}
-				}
-			}
-			if (s == TrainState::INCOMPLETE)    //print missing vehicle types
-			{
-				std::cout << "Missing vehicles:" << std::endl;
-				std::vector<VehicleType> missing = train->getMissingVehicles();
-				for (VehicleType type : missing)
-				{
-					std::cout << vehicleTypeStrings[static_cast<size_t>(type)];
-					std::cout << std::endl;
-				}
-			}
-		}
 	}
 	else
 	{
@@ -368,7 +379,6 @@ void UserInterface::displayTrainHistory()
 
 	if (!events.empty())
 	{
-		//std::for_each(events.cbegin(), events.cend(), std::bind(printEvent, std::cout, std::placeholders::_1));
 		for (auto e : events)
 		{
 			printEvent(std::cout, e);
@@ -389,10 +399,10 @@ void UserInterface::displayStatistics()
 
 	for (auto train : m_allTrains)
 	{
-		Time delay = train->getDelay();
 		if (train->getState() == TrainState::FINISHED)
 		{
-			if (delay > 0)  //
+			Time delay = train->getDelay();
+			if (delay > 0)  
 			{
 				totalDelay += delay;   //accumulate total delay (arrival delay)
 				++numDelayed;     //count number of delayed trains (arrival delay)
@@ -405,9 +415,6 @@ void UserInterface::displayStatistics()
 			++numNoDeparture;
 		}
 	}
-
-	
-
 
 	sepLine(55, '=');
 	std::cout << "Simulation statistics" << std::endl;
@@ -502,6 +509,34 @@ void printTrain(std::ostream & os, std::shared_ptr<const Train> t, LogLevel p_lo
 			<< ") to " << t->getArrStation() << ' ' << t->getArrTime() << " (" << t->getActualArrTime() << ')'
 			<< " delay (" << formatTime(t->getDelay()) << ") speed = " << t->getAvgSpeed() << " km/h";
 	}	
+	//if log level high, also print info about all vehicles in the train
+	if (p_logLevel == LogLevel::HIGH)
+	{
+		TrainState s = t->getState();
+		if (s != TrainState::NOT_ASSEMBLED || s != TrainState::FINISHED)
+		{
+			os << std::endl;
+			std::vector<std::shared_ptr<Vehicle>> vehicles = t->getVehicles();
+			for (auto v : vehicles)
+			{
+				if (v)
+				{
+					printVehicle(os, v, p_logLevel);
+					os << std::endl;
+				}
+			}
+		}
+		if (s == TrainState::INCOMPLETE)    //print missing vehicle types
+		{
+			os << "Missing vehicles:" << std::endl;
+			std::vector<VehicleType> missing = t->getMissingVehicles();
+			for (VehicleType type : missing)
+			{
+				os << vehicleTypeStrings[static_cast<size_t>(type)];
+				os << std::endl;
+			}
+		}
+	}
 }
 
 void printEvent(std::ostream & os, std::shared_ptr<const Event> e)

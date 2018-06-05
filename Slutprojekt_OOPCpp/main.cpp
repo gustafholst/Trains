@@ -7,21 +7,25 @@
 
 int main()
 {
-	RailwayCompany company;
-	try
+	bool reset = false;
+	do
 	{
-		company.loadStations();
-		company.loadTimetable();
-		company.loadMap();
-	}
-	catch (std::runtime_error &e)
-	{
-		std::cerr << e.what() << std::endl << "Exiting..." << std::endl;
-		return 1;
-	}
-	
-	Simulation simulation;
+		RailwayCompany company;
+		try
+		{
+			company.loadStations();
+			company.loadTimetable();
+			company.loadMap();
+		}
+		catch (std::runtime_error &e)
+		{
+			std::cerr << e.what() << std::endl << "Exiting..." << std::endl;
+			return 1;
+		}
 
-	UserInterface ui(&company, &simulation);
-	ui.run();
+		Simulation simulation;
+
+		UserInterface ui(&company, &simulation);
+		reset = ui.run();
+	} while (reset);
 }

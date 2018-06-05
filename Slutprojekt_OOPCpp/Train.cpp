@@ -1,11 +1,15 @@
+/*
+* Train.h
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Defines the Train class.
+*
+*/
 
 #include <algorithm>
 #include "Train.h"
-
-
-Train::~Train()
-{
-}
 
 std::vector<VehicleType> Train::getMissingVehicles() const
 {

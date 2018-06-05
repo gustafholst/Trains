@@ -17,7 +17,7 @@ public:
 		seedSimulation();
 	};
 
-	void run();
+	bool run();
 
 private:
 	RailwayCompany * m_railway;
@@ -29,8 +29,18 @@ private:
 	Menu stationMenu;
 	Menu vehicleMenu;
 	std::vector<std::shared_ptr<Train>> m_allTrains;   //for statistics when simulation is finished
+	bool resetSim = false;
 
-	void seedSimulation();  //creates trains from the timetable and puts inital events in the event queue
+	/*
+	Creates actual trains from the routes in the timetable.
+	*/
+	void seedSimulation();  
+
+	/*
+	Creates initial events within start/end time chosen and processes any events before start time.
+	Stores inital vehicle counts for every station for comparison at the end of simulation.
+	*/
+	void prepareSimulation(); 
 	void runSimulation();
 
 	void setupMenus();

@@ -1,4 +1,12 @@
-
+/*
+* Simulation.h
+* Gustaf Holst, guho1700
+* 2018-05-26
+* v1.0
+*
+* Declares the Simulation class.
+*
+*/
 
 #ifndef SIMULATION_H
 #define SIMULATION_H
@@ -14,7 +22,6 @@ class Simulation
 public:
 	Simulation()
 		:m_currentTime(0), m_interval(10), m_startTime(0), m_endTime(1439), m_logLevel(LogLevel::NORMAL) {}   //1439 -> 23:59
-	~Simulation();
 
 	Time getCurrentTime() const { return m_currentTime; }
 	Time getCurrentInterval() const { return m_interval; }

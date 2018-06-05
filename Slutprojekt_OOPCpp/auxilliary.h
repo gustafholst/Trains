@@ -56,12 +56,6 @@ int getIntInput(const std::string &message, const int &min = (std::numeric_limit
 
 Time getTimeInput(const std::string &message);
 
-/*
-Delays execution of the program for the specified amount of milliseconds.
-
-@param millis the amount of milliseconds to pause
-*/
-void pause(const int millis);
 
 /*
 Clears the console.
@@ -74,7 +68,7 @@ Prints a 'line' of specified length useing the specified character to the consol
 @param length the number a characters to print
 @param c the character to print
 */
-void sepLine(const int length, const char c);
+void sepLine(std::ostream &os, const int length, const char c);
 
 /*
 Returns a string with all lowercase letters. (Original string is left intact)
@@ -82,20 +76,6 @@ Returns a string with all lowercase letters. (Original string is left intact)
 @param string the string to transform
 */
 std::string lowercase(const std::string &string);
-
-/*
-Prints a message to the user and waits for confirmation. Accepted positive confirmations are "y" or "yes", case insensitive.
-All other replies are considered negative replies.
-
-@param message the message to display
-@return true if positive reply has been given, false otherwise
-*/
-bool confirm(const std::string &message);
-
-/*
-'Animates' the printing of the word "PLAYING" to the screen, repeated four times.
-*/
-void simulatePlaying();
 
 /*
 Prints a message to the screen, waits for the user to press any key and then clears the screen.

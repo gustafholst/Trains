@@ -1,7 +1,7 @@
 /*
 * Menu.cpp
 * Gustaf Holst, guho1700
-* 2018-03-02
+* 2018-05-25
 * v1.0
 *
 * Defines members and functions related to the Menu class.
@@ -21,18 +21,17 @@ Menu::Menu(std::string p_head)
 
 void Menu::addItem(const std::string & text, const bool p_enabled, std::function<void()> p_function)
 {
-		m_menuItems.emplace_back(text, p_enabled, p_function);
+	m_menuItems.emplace_back(text, p_enabled, p_function);
 }
 
 void Menu::printHead() const
 {
 	std::cout << m_head << std::endl;
-	sepLine(m_head.size(), '=');
+	sepLine(std::cout, m_head.size(), '=');
 }
 
 void Menu::printMenuItems()
 {
-	m_enabledItems.clear();    //clear previus list
 	int number = 1;
 	for (MenuItem &item : m_menuItems)
 	{
@@ -60,7 +59,7 @@ bool Menu::display(Simulation * sim)
 	printHead();
 	if (sim != nullptr)
 	{
-		sepLine(28, '-');
+		sepLine(std::cout, 28, '-');
 		if (sim->isFinished())
 			std::cout << "||| SIMULATION FINISHED |||" << std::endl;
 		std::cout << std::left << std::setw(22) << "Current time: " << std::right << std::setw(6) << (sim->getCurrentTime()) << std::endl;
@@ -68,21 +67,21 @@ bool Menu::display(Simulation * sim)
 		std::cout << std::left << std::setw(22) << "Start time: " << std::right << std::setw(6) << formatTime(sim->getStartTime()) << std::endl;
 		std::cout << std::left << std::setw(22) << "End time: " << std::right << std::setw(6) << formatTime(sim->getEndTime()) << std::endl;
 		std::cout << std::left << std::setw(22) << "Current log level: " << std::right << std::setw(6) << logLevelStrings[static_cast<size_t>(sim->getLogLevel())] << std::endl;
-		sepLine(28, '-');
+		sepLine(std::cout, 28, '-');
 	}
 	printMenuItems();
 	unsigned choice = getMenuChoice();
 	if (choice == 0)
 		return false;
 
-	m_enabledItems[choice - 1]->doOption();   //chosen number will correspond to index in vector with enabled items (pointers)
+	m_enabledItems[choice - 1]->doOption();   //chosen number will correspond to index in vector with pointers to enabled items 
+	m_enabledItems.clear();    //clear list , a new list will be created every time
 	return true;
 }
 
 void Menu::enableItem(const size_t item)
 {
 	m_menuItems[item].enable();
-	
 }
 
 void Menu::disableItem(const size_t item)

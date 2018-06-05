@@ -1,3 +1,12 @@
+/*
+* Simulation.cpp
+* Gustaf Holst, guho1700
+* 2018-05-26
+* v1.0
+*
+* Defines the Simulation class.
+*
+*/
 
 #include <fstream>
 #include "Simulation.h"
@@ -6,10 +15,6 @@
 
 std::string LOG_FILE = "Trainsim.log";
 void printEvent(std::ostream & os, std::shared_ptr<const Event> e);  //forward declaration (function def in UserInterface.cpp)
-
-Simulation::~Simulation()
-{
-}
 
 bool Simulation::changeStartTime(const Time newTime)
 {

@@ -37,8 +37,12 @@ protected:
 	std::stringstream m_statusStream;
 };
 
+// overloaded output operator
 std::ostream &operator << (std::ostream &outstream, const Event &e);
 
+/*
+Functor for comparing two instances of the Event classes by time.
+*/
 class EventComparison 
 {
 public:

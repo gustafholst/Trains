@@ -446,14 +446,14 @@ void UserInterface::displayStatistics()
 		}
 	}
 
-	sepLine(std::cout, 55, '=');
+	sepLine(std::cout, 57, '=');
 	std::cout << "Simulation statistics" << std::endl;
 	sepLine(std::cout, 21, '-');
-	std::cout << std::left << std::setw(50) << "Simulation end time:" << std::right << std::setw(5) << (m_simulation->getCurrentTime()) << std::endl;
-	std::cout << std::left << std::setw(50) << "Number of delayed trains:" << std::right << std::setw(5) << numDelayed << std::endl;
-	std::cout << std::left << std::setw(50) << "Number of trains that never left the station:" << std::right << std::setw(5) << numNoDeparture << std::endl;
-	std::cout << std::left << std::setw(50) << "Total delay time:" << std::right << std::setw(5) << formatTime(totalDelay) << std::endl;
-	std::cout << std::left << std::setw(50) << "Total delay time at departure:" << std::right << std::setw(5) << formatTime(totalDepDelay) << std::endl;
+	std::cout << std::left << std::setw(50) << "Simulation end time:" << std::right << std::setw(7) << (m_simulation->getCurrentTime()) << std::endl;
+	std::cout << std::left << std::setw(50) << "Number of delayed trains:" << std::right << std::setw(7) << numDelayed << std::endl;
+	std::cout << std::left << std::setw(50) << "Number of trains that never left the station:" << std::right << std::setw(7) << numNoDeparture << std::endl;
+	std::cout << std::left << std::setw(50) << "Total delay time:" << std::right << std::setw(7) << formatTime(totalDelay) << std::endl;
+	std::cout << std::left << std::setw(50) << "Total delay time at departure:" << std::right << std::setw(7) << formatTime(totalDepDelay) << std::endl;
 
 	//print table displaying vehicle count at every station
 	std::cout << std::endl << "Number of vehicles before and after simulation" << std::endl;
@@ -466,7 +466,7 @@ void UserInterface::displayStatistics()
 		std::cout << std::left << std::setw(20) << station.first << std::right << std::setw(12) << station.second << std::setw(12) << finalCount << std::endl;
 	});
 
-	sepLine(std::cout, 55, '=');
+	sepLine(std::cout, 57, '=');
 	std::cout << "see submenus (station/train/vehicle) for more details" << std::endl;
 
 	goOn("Press <ENTER> for menu...");

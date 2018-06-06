@@ -1,3 +1,12 @@
+/*
+* TrainMap.cpp
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Defines the TrainMap class.
+*
+*/
 
 #include <fstream>
 #include <iostream>
@@ -9,7 +18,7 @@ std::string TRAIN_MAP_FILE = "TrainMap.txt";
 int TrainMap::operator()(const std::string & a, const std::string & b)
 {
 	if (m_distances[a][b] == 0)        // if dep - arr is undefined
-		return m_distances[b][a];	   //return arr -dep
+		return m_distances[b][a];	   //return arr - dep
 
 	return m_distances[a][b];
 }

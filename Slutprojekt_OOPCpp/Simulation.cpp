@@ -16,7 +16,7 @@
 std::string LOG_FILE = "Trainsim.log";
 void printEvent(std::ostream & os, std::shared_ptr<const Event> e);  //forward declaration (function def in UserInterface.cpp)
 
-bool Simulation::changeStartTime(const Time newTime)
+bool Simulation::setStartTime(const Time newTime)
 {
 	if (newTime > m_endTime)
 		return false;
@@ -25,7 +25,7 @@ bool Simulation::changeStartTime(const Time newTime)
 	return true;
 }
 
-bool Simulation::changeEndTime(const Time newTime)
+bool Simulation::setEndTime(const Time newTime)
 {
 	if (newTime < m_startTime)
 		return false;

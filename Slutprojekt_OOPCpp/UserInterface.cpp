@@ -36,7 +36,7 @@ void UserInterface::runSimulation()
 		m_simulation->writeToFile();    //print log file with all the events
 		m_allTrains = m_railway->getAllTrains();  //get pointers to all trains
 
-												  //disable menu items only applicable during simulation
+		//disable menu items only applicable during simulation
 		for (size_t item = 0; item < 4; ++item)
 			simMenu.disableItem(item);
 
@@ -48,6 +48,19 @@ void UserInterface::runSimulation()
 
 		while (simMenu.display(m_simulation));   //keep displaying menu until user is done
 	}
+}
+
+void UserInterface::startSimulation()
+{
+	//disable menu items only applicable before simulation starts
+	for (size_t item = 0; item < 3; ++item)
+		startMenu.disableItem(item);  //change start/end time, start simulation
+
+	startMenu.enableItem(3);   //enable back to simulation option
+	startMenu.enableItem(4);   //enable restart simulation option
+
+	prepareSimulation();
+	runSimulation();
 }
 
 void UserInterface::setupMenus()
@@ -70,15 +83,7 @@ void UserInterface::setupStartMenu()
 		changeEndTime();
 	});
 	startMenu.addItem("Start simulation", true, [this]() {
-		//disable menu items only applicable during simulation (they have already been displayed and are not needed anymore)
-		for (size_t item = 0; item < 3; ++item)
-			startMenu.disableItem(item);  //change start/end time, start simulation
-
-		startMenu.enableItem(3);   //enable back to simulation option
-		startMenu.enableItem(4);   //enable restart simulation
-
-		prepareSimulation();
-		runSimulation();
+		startSimulation();
 	});
 	startMenu.addItem("Back to simulation", false, [this]() {
 		if (m_simulation->isFinished())
@@ -131,28 +136,13 @@ void UserInterface::setupVehicleMenu()
 {
 	vehicleMenu.setHead("Vehicle menu");
 	vehicleMenu.addItem("Show vehicle by id", true, [this]() {
-		locateVehicle();
+		displayVehicle();
 	});
 	vehicleMenu.addItem("Show all vehicles", true, [this]() {
 		displayAllVehicles();
 	});
 	vehicleMenu.addItem("View vehicle history", false, [this]() {
-		int searched = getIntInput("Input id number of vehicle: ", 0);
-		const std::vector<std::shared_ptr<Event>> events = m_simulation->getVehicleEvents(searched);
-		if (!events.empty())
-		{
-			for (auto &e : events)
-			{
-				printEvent(std::cout, e);
-				std::cout << std::endl;
-			}
-		}
-		else
-		{
-			std::cout << "-- The vehicle has not been used during simulation --" << std::endl;
-		}
-		
-		goOn("Press <ENTER> to for menu...");
+		displayVehicleHistory();
 	});
 	vehicleMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
@@ -267,8 +257,7 @@ void UserInterface::nextInterval()
 void UserInterface::changeInterval()
 {
 	Time newInterval = getTimeInput("New interval: ");
-	m_simulation->changeInterval(newInterval);
-	//std::cout << "-- interval is changed --" << std::endl;
+	m_simulation->setInterval(newInterval);
 }
 
 void UserInterface::changeStartTime()
@@ -277,7 +266,7 @@ void UserInterface::changeStartTime()
 	{
 		Time newStartTime = getTimeInput("New start time: ");
 		
-		if (m_simulation->changeStartTime(newStartTime))
+		if (m_simulation->setStartTime(newStartTime))
 			break;
 		else 
 		{
@@ -293,7 +282,7 @@ void UserInterface::changeEndTime()
 	{
 		Time newEndTime = getTimeInput("New end time: ");
 
-		if (m_simulation->changeEndTime(newEndTime))
+		if (m_simulation->setEndTime(newEndTime))
 			break;
 		else
 		{
@@ -303,10 +292,9 @@ void UserInterface::changeEndTime()
 	}
 }
 
-void UserInterface::locateVehicle()
+void UserInterface::displayVehicle()
 {
 	using namespace std;
-
 	int searched = getIntInput("Input id number of vehicle: ", 0);
 
 	auto v = m_railway->locateVehicle(searched);    //returns a tuple (vehicle, train, station)
@@ -327,6 +315,10 @@ void UserInterface::locateVehicle()
 			printTrain(std::cout, train, m_simulation->getLogLevel());
 			cout << endl;
 		}
+	}
+	else
+	{
+		std::cout << "-- no vehicle found --" << std::endl;
 	}
 
 	goOn("Press <ENTER> for menu...");
@@ -490,6 +482,26 @@ void UserInterface::displayEventsHistory()
 	}
 
 	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayVehicleHistory()
+{
+	int searched = getIntInput("Input id number of vehicle: ", 0);
+	const std::vector<std::shared_ptr<Event>> events = m_simulation->getVehicleEvents(searched);
+	if (!events.empty())
+	{
+		for (auto &e : events)
+		{
+			printEvent(std::cout, e);
+			std::cout << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "-- The vehicle has not been used during simulation --" << std::endl;
+	}
+
+	goOn("Press <ENTER> to for menu...");
 }
 
 void printVehicle(std::ostream & os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel)

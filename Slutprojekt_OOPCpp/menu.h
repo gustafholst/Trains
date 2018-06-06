@@ -43,21 +43,21 @@ class Menu
 {
 private:
 	std::string m_head;
-	std::vector<MenuItem> m_menuItems;
-	std::vector<MenuItem*> m_enabledItems;
+	std::vector<MenuItem> m_menuItems;      //all items
+	std::vector<MenuItem*> m_enabledItems;  //pointers to items presented to the user
 	
 	void printHead() const;
 
 	/*
-	Prints the name of the menu followed by a numbered list of all menu items.
+	Prints the name of the menu followed by a numbered list of all enabled menu items.
 	*/
 	void printMenuItems();
 
 	/*
 	Returns the chosen menu option. Will keep prompting the user for input until a 
-	value between 1 and the amount of list items in the menu has been provided.
+	value between 1 and the amount of enabled list items in the menu has been provided.
 
-	return the chosen option
+	@return the chosen option
 	*/
 	unsigned getMenuChoice() const;
 
@@ -71,6 +71,7 @@ public:
 	Adds a menu item to this menu.
 
 	@param text the text of the menu item
+	@param p_enabled whether or not the item should be enabled from the start
 	@param p_function pointer to the function to be associated with the item
 	*/
 	void addItem(const std::string &text, const bool p_enabled, std::function<void()> p_function);
@@ -78,6 +79,7 @@ public:
 	/*
 	Displays the menu, collects user input and calls the appropriate function.
 
+	@param sim the simulation object 
 	@return false if the exit program option has been chosen, true otherwise
 	*/
 	bool display(Simulation * sim = nullptr);

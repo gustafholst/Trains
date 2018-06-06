@@ -42,6 +42,7 @@ private:
 	*/
 	void prepareSimulation(); 
 	void runSimulation();
+	void startSimulation();
 
 	void setupMenus();
 	void setupStartMenu();
@@ -57,8 +58,8 @@ private:
 	void changeInterval();
 	void changeStartTime();
 	void changeEndTime();
-	void locateVehicle();
 
+	void displayVehicle();
 	void displayStation();
 	void displayVehiclesAtStation();
 	void displayAllStationNames();
@@ -67,6 +68,7 @@ private:
 	void displayTrainHistory();
 	void displayStatistics();
 	void displayEventsHistory();
+	void displayVehicleHistory();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);

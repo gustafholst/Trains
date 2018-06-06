@@ -1,6 +1,7 @@
 
 #include <algorithm>
 #include <sstream>
+#include <cassert>
 #include "TrainStation.h"
 
 bool vehicleCompare(const std::shared_ptr<Vehicle> a, const std::shared_ptr<Vehicle> b)
@@ -30,12 +31,6 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 
 void TrainStation::parkVehicle(std::shared_ptr<Vehicle> vehicle)
 {
-	//place vehicle first in the section of vehicles of same type
-	/*auto firstOfType = find_if(m_vehicles.begin(), m_vehicles.end(), [vehicle](std::shared_ptr<Vehicle> v) {
-		return v->getType() == vehicle->getType();
-	});
-
-	m_vehicles.insert(firstOfType, vehicle);*/
 	m_vehicles.push_back(vehicle);
 }
 
@@ -69,12 +64,12 @@ bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
 	
 	bool complete = true;
 
-	if (train->getState() == TrainState::INCOMPLETE)
+	if (train->getState() == TrainState::INCOMPLETE)  //previous attempts have been made
 	{
 		std::vector<std::shared_ptr<Vehicle>> vehicles = train->getVehicles();
 		for (size_t i = 0; i < neededVehicles.size(); ++i)
 		{
-			if (vehicles[i] == nullptr) { //if that vehicle is missing
+			if (vehicles[i] == nullptr) { //if vehicle at that spot (index) is missing
 				std::shared_ptr<Vehicle> v = findVehicle(neededVehicles[i]);
 				if (v == nullptr)
 					complete = false;
@@ -84,7 +79,7 @@ bool TrainStation::assembleTrain(std::shared_ptr<Train> train)
 		}
 		return complete;
 	}
-	//otherwise (first try to assemble train)
+	//otherwise (first attempt to assemble train)
 	for (VehicleType type : neededVehicles)
 	{
 		std::shared_ptr<Vehicle> v = findVehicle(type);
@@ -107,6 +102,8 @@ void TrainStation::depart(std::shared_ptr<Train> train)
 		return train == t;
 	});
 
+	assert(found != m_trains.end());    //if train is not found, something is seriously wrong
+
 	if (found != m_trains.end())
 		m_trains.erase(found);
 }
@@ -114,9 +111,8 @@ void TrainStation::depart(std::shared_ptr<Train> train)
 const std::vector<std::shared_ptr<Vehicle>> TrainStation::getAllVehicles() const
 {
 	std::vector < std::shared_ptr<Vehicle> >vehicles;
+	// copy all pointer into a vector (instead of list)
 	copy(m_vehicles.cbegin(), m_vehicles.cend(), std::back_inserter(vehicles));
-	/*for (auto &shared : m_vehicles)
-		vehicles.push_back(std::shared_ptr<Vehicle>(shared));*/
 
 	return vehicles;
 }
@@ -156,29 +152,28 @@ std::istream & operator>>(std::istream & instream, TrainStation & ts)
 
 		VehicleType type = static_cast<VehicleType>(param[1]);   //param[1] contains vehicle type
 
-		if (type == VehicleType::SeatedCoach)
+		switch (type)
 		{
+		case VehicleType::SeatedCoach:
 			ts.parkVehicle(shared_ptr<Vehicle>(new SeatedCoach(param[0], param[2], param[3])));  // id, numSeats, internet
-		}
-		else if (type == VehicleType::SleeperCoach)
-		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new SleeperCoach(param[0], param[2])));  // id, numBeds
-		}
-		else if (type == VehicleType::OpenGoods)
-		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new OpenGoods(param[0], param[2], param[3])));  // id, capacity, area
-		}
-		else if (type == VehicleType::CoveredGoods)
-		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new CoveredGoods(param[0], param[2])));  // id, volume
-		}
-		else if (type == VehicleType::ElectricEngine)
-		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new ElectricEngine(param[0], param[2], param[3])));  // id, maxSpeed, effect
-		}
-		else if (type == VehicleType::DieselEngine)
-		{
-			ts.parkVehicle(shared_ptr<Vehicle>(new DieselEngine(param[0], param[2], param[3])));  // id, maxSpeed, fuelConsumption
+			break;
+		case VehicleType::SleeperCoach:
+			ts.parkVehicle(std::make_shared<SleeperCoach>(param[0], param[2]));  // id, numBeds
+			break;
+		case VehicleType::OpenGoods:
+			ts.parkVehicle(std::make_shared<OpenGoods>(param[0], param[2], param[3]));  // id, capacity, area
+			break;
+		case VehicleType::CoveredGoods:
+			ts.parkVehicle(std::make_shared<CoveredGoods>(param[0], param[2]));  // id, volume
+			break;
+		case VehicleType::ElectricEngine:
+			ts.parkVehicle(std::make_shared<ElectricEngine>(param[0], param[2], param[3]));  // id, maxSpeed, effect
+			break;
+		case VehicleType::DieselEngine:
+			ts.parkVehicle(std::make_shared<DieselEngine>(param[0], param[2], param[3]));  // id, maxSpeed, fuelConsumption
+			break;
+		default:
+			break;
 		}
 
 		pos = row.find('(', pos + 1);  // find next bracket

@@ -69,6 +69,7 @@ private:
 	void displayStatistics();
 	void displayEventsHistory();
 	void displayVehicleHistory();
+	void displayTimetable();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);

@@ -15,8 +15,8 @@ public:
 	Route() = default;
 	Route(const Route &route) = default;
 	Route(const int p_id, const std::string &p_depStation, const std::string &p_arrStation, const Time &p_depTime, const Time &p_arrTime)
-		:m_id(p_id), m_depStation(p_depStation), m_arrStation(p_arrStation), m_depTime(p_depTime), m_arrTime(p_arrTime) {};
-	virtual ~Route();
+		:m_id(p_id), m_depStation(p_depStation), m_arrStation(p_arrStation), m_depTime(p_depTime), m_arrTime(p_arrTime) {}
+	virtual ~Route() {}
 
 	int getId() const { return m_id; }
 	std::string getDepStation() const { return m_depStation; }

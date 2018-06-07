@@ -180,6 +180,14 @@ const std::vector<std::shared_ptr<Train>> RailwayCompany::getAllTrains() const
 	return allTrains;
 }
 
+std::vector<const Route*> RailwayCompany::getTimetable()
+{
+	std::vector<const Route*> routePtrs;
+	for (Route &r : m_timetable)
+		routePtrs.push_back(&r);
+	return routePtrs;
+}
+
 void RailwayCompany::createTrains()
 {
 	for (Route &route : m_timetable)

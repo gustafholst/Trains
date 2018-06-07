@@ -56,8 +56,8 @@ void UserInterface::startSimulation()
 	for (size_t item = 0; item < 3; ++item)
 		startMenu.disableItem(item);  //change start/end time, start simulation
 
-	startMenu.enableItem(3);   //enable back to simulation option
-	startMenu.enableItem(4);   //enable restart simulation option
+	startMenu.enableItem(4);   //enable back to simulation option
+	startMenu.enableItem(5);   //enable restart simulation option
 
 	prepareSimulation();
 	runSimulation();
@@ -82,6 +82,9 @@ void UserInterface::setupStartMenu()
 	startMenu.addItem("Change end time", true, [this]() {
 		changeEndTime();
 	});
+	startMenu.addItem("View time table", true, [this]() {
+		displayTimetable();
+	});
 	startMenu.addItem("Start simulation", true, [this]() {
 		startSimulation();
 	});
@@ -94,7 +97,6 @@ void UserInterface::setupStartMenu()
 	startMenu.addItem("Restart simulation", false, [this]() {
 		resetSim = true;
 	});
-	
 }
 
 void UserInterface::setupSimulationMenu()
@@ -195,6 +197,9 @@ void UserInterface::setupTrainMenu()
 	trainMenu.addItem("View train history", true, [this]() {
 		displayTrainHistory();
 	});
+	/*trainMenu.addItem("View time table", true, [this]() {
+		displayTimetable();
+	});*/
 	trainMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
@@ -502,6 +507,23 @@ void UserInterface::displayVehicleHistory()
 	}
 
 	goOn("Press <ENTER> to for menu...");
+}
+
+void UserInterface::displayTimetable()
+{
+	std::vector<const Route*> routes = m_railway->getTimetable();
+
+	std::sort(routes.begin(), routes.end(), [](const Route *r1, const Route *r2) {
+		return r1->getDepTime() < r2->getDepTime();
+	});
+	std::cout << "Timetable" << std::endl;
+	sepLine(std::cout, 11, '=');
+	std::cout << std::setw(6) << "Dep" << std::setw(24) << "from" << std::setw(6) << "Arr" << std::setw(30) << "to" << std::setw(8) << "Train#" << std::endl;
+	std::cout << std::setw(6) << "---" << std::setw(24) << "----" << std::setw(6) << "---" << std::setw(30) << "--" << std::setw(8) << "------" << std::endl;
+	for (const Route *r : routes)
+		std::cout << *r << std::endl;
+
+	goOn("Press <ENTER> for menu...");
 }
 
 void printVehicle(std::ostream & os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel)

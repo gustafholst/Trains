@@ -41,12 +41,8 @@ public:
 
 	const std::vector<std::shared_ptr<Train>> getAllTrains() const;
 
-	void printTimetable() {
-		std::cout << "Timetable" << std::endl;
-		for (auto &r : m_timetable)
-			std::cout << r << std::endl;
-	}
-
+	void printTimetable();
+	std::vector<const Route*> getTimetable();
 	void createTrains();
 
 	void makeInitialVehicleInventory();

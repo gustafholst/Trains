@@ -1,11 +1,7 @@
 
+#include <iomanip>
 #include <sstream>
 #include "Route.h"
-
-
-Route::~Route()
-{
-}
 
 std::vector<std::string> Route::getVehicleTypeNames() const
 {
@@ -48,16 +44,11 @@ std::istream & operator>>(std::istream & instream, Route & route)
 
 std::ostream & operator<<(std::ostream & outstream, const Route & route)
 {
-	std::vector<std::string> vehicles = route.getVehicleTypeNames();
-	outstream << route.getId() << ' '
-		<< route.getDepStation() << ' '
-		<< route.getArrStation() << ' '
-		<< formatTime(route.getDepTime()) << ' '
-		<< formatTime(route.getArrTime()) << ' '
-		<< route.getMaxSpeed() << ' ';
-
-	for (auto &v : vehicles)
-		outstream << '[' << v << ']' << ' ';
-
+	outstream << std::setw(6) << formatTime(route.getDepTime())
+		<< std::setw(24) << route.getDepStation()
+		<< std::setw(6) << formatTime(route.getArrTime())
+		<< std::setw(30) << route.getArrStation()
+		<< '[' << route.getId() << ']';
+		
 	return outstream;
 }

@@ -1,4 +1,12 @@
-
+/*
+* Vehicle.h
+* Gustaf Holst, guho1700
+* 2018-05-27
+* v1.0
+*
+* Declares and defines the Vehicle class and subclasses.
+*
+*/
 
 #ifndef VEHICLE_H
 #define VEHICLE_H

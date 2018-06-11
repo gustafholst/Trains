@@ -1,3 +1,12 @@
+/*
+* Route.cpp
+* Gustaf Holst, guho1700
+* 2018-05-27
+* v1.0
+*
+* Definitions of members of the Route class and associated functions.
+*
+*/
 
 #include <iomanip>
 #include <sstream>

@@ -1,3 +1,12 @@
+/*
+* RailwayCompany.cpp
+* Gustaf Holst, guho1700
+* 2018-05-27
+* v1.0
+*
+* Defines the RailwayCompany class.
+*
+*/
 
 #include <iostream>
 #include <fstream>

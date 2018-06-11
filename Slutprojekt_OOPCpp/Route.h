@@ -1,5 +1,12 @@
-
-
+/*
+* Time.h
+* Gustaf Holst, guho1700
+* 2018-05-27
+* v1.0
+*
+* Declares the Route class.
+*
+*/
 
 #ifndef CONNECTION_H
 #define CONNECTION_H
@@ -18,6 +25,7 @@ public:
 		:m_id(p_id), m_depStation(p_depStation), m_arrStation(p_arrStation), m_depTime(p_depTime), m_arrTime(p_arrTime) {}
 	virtual ~Route() {}
 
+	// ------ GETTERS ------
 	int getId() const { return m_id; }
 	std::string getDepStation() const { return m_depStation; }
 	std::string getArrStation() const { return m_arrStation; }
@@ -27,6 +35,7 @@ public:
 	std::vector<std::string> getVehicleTypeNames() const;
 	std::vector<VehicleType> getVehicleTypes() const { return m_vehicleTypes; }
 
+	// ------ SETTERS ------
 	void setId(const int p_id) { m_id = p_id; }
 	void setDepStation(const std::string &p_dep) { m_depStation = p_dep; }
 	void setArrStation(const std::string &p_arr) { m_arrStation = p_arr; }

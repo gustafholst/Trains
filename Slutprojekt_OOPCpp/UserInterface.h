@@ -65,12 +65,14 @@ private:
 	void displayAllStationNames();
 	void displayAllVehicles();
 	void displayTrain();
+	void displayTrainByVehicle();
 	void displayTrainHistory();
 	void displayStatistics();
 	void displayEventsHistory();
 	void displayVehicleHistory();
 	void displayTimetable();
 	void displayDynamicTimetable();
+	void displayDelayedTrains();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);

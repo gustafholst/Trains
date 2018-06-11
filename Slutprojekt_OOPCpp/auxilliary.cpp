@@ -87,6 +87,6 @@ std::string lowercase(const std::string & string)
 
 void goOn(const std::string &message)
 {
-	std::cout << message << std::endl;
+	std::cout << message << '\n' << std::endl;
 	std::cin.get();
 }

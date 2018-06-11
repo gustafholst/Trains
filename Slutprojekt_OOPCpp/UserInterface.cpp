@@ -42,8 +42,8 @@ void UserInterface::runSimulation()
 
 		simMenu.enableItem(5);     //enable print statistics option
 		simMenu.enableItem(6);     //enable view all events option
-		trainMenu.enableItem(3);   //enable view delayed trains option
-		trainMenu.enableItem(4);   //trains that never left station
+		trainMenu.enableItem(4);   //enable view delayed trains option
+		trainMenu.enableItem(5);   //trains that never left station
 		vehicleMenu.enableItem(2);  //enable vehicle history option
 
 		while (simMenu.display(m_simulation));   //keep displaying menu until user is done
@@ -197,6 +197,9 @@ void UserInterface::setupTrainMenu()
 	trainMenu.addItem("Search train by id", true, [this]() {
 		displayTrain();
 	});
+	trainMenu.addItem("Search train by vehicle id", true, [this]() {
+		displayTrainByVehicle();
+	});
 	trainMenu.addItem("View train history", true, [this]() {
 		displayTrainHistory();
 	});
@@ -204,16 +207,7 @@ void UserInterface::setupTrainMenu()
 		logLevelMenu.display(m_simulation);
 	});
 	trainMenu.addItem("View delayed trains", false, [this]() {
-		for (auto &t : m_allTrains)
-		{
-			if (t->getDelay() > 0 && t->getState() == TrainState::FINISHED)
-			{
-				printTrain(std::cout, t, m_simulation->getLogLevel());
-				std::cout << std::endl;
-			}
-		}
-
-		goOn("Press <ENTER> for menu...");
+		displayDelayedTrains();
 	});
 	trainMenu.addItem("View trains that never left the station", false, [this]() {
 		for (auto &t : m_allTrains)
@@ -406,6 +400,34 @@ void UserInterface::displayTrain()
 	goOn("Press <ENTER> for menu...");
 }
 
+void UserInterface::displayTrainByVehicle()
+{
+	using namespace std;
+	int searched = getIntInput("Input id number of vehicle: ", 0);
+
+	auto v = m_railway->locateVehicle(searched);    //returns a tuple (vehicle, train, station)
+	auto vehicle = get<0>(v);
+	auto train = get<1>(v);
+	auto station = get<2>(v);
+	if (vehicle)
+	{
+		if (train)
+		{
+			cout << "Vehicle currently part of train: " << endl;
+			printTrain(std::cout, train, m_simulation->getLogLevel());
+			cout << endl;
+		}
+		else
+			std::cout << "-- vehicle not currently part of any train --" << std::endl;
+	}
+	else
+	{
+		std::cout << "-- no vehicle found --" << std::endl;
+	}
+
+	goOn("Press <ENTER> for menu...");
+}
+
 void UserInterface::displayTrainHistory()
 {
 	int trainId = getIntInput("Train id: ");
@@ -549,6 +571,20 @@ void UserInterface::displayDynamicTimetable()
 		<< std::setw(24) << t->getArrStation() << '[' << t->getId() << ']' << std::endl;
 	}
 		
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayDelayedTrains()
+{
+	for (auto &t : m_allTrains)
+	{
+		if (t->getDelay() > 0 && t->getState() == TrainState::FINISHED)
+		{
+			printTrain(std::cout, t, m_simulation->getLogLevel());
+			std::cout << std::endl;
+		}
+	}
+
 	goOn("Press <ENTER> for menu...");
 }
 

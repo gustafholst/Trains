@@ -16,12 +16,8 @@
 #include <windows.h>
 #define clearScr() system("cls")
 #else 
-#include <unistd.h>
-#define Sleep(x) usleep((x)*1000)
 #define clearScr() printf("\033[H\033[J")
 #endif
-
-
 
 #include <iostream>
 #include "Time.h"
@@ -54,8 +50,13 @@ be provided by the user.
 */
 int getIntInput(const std::string &message, const int &min = (std::numeric_limits<int>::min)(), const int &max = (std::numeric_limits<int>::max)());
 
-Time getTimeInput(const std::string &message);
+/*
+Prints a message to the user then waits for input on the form [hh:mm].
 
+@param message the message to print
+@return a Time object based on the provided input
+*/
+Time getTimeInput(const std::string &message);
 
 /*
 Clears the console.

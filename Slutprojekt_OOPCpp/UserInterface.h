@@ -70,11 +70,13 @@ private:
 	void displayEventsHistory();
 	void displayVehicleHistory();
 	void displayTimetable();
+	void displayDynamicTimetable();
 };
 
 void printVehicle(std::ostream &os, std::shared_ptr<const Vehicle> v, LogLevel p_logLevel);
 void printStation(std::ostream &os, const TrainStation *station, LogLevel p_logLevel);
 void printTrain(std::ostream &os, std::shared_ptr<const Train> t, LogLevel p_logLevel = LogLevel::NORMAL);
 void printEvent(std::ostream &os, std::shared_ptr<const Event> e);
+
 
 #endif //!USERINTERFACE_H

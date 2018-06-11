@@ -6,8 +6,8 @@
 #include <memory>
 #include <sstream>
 #include "Time.h"
-//#include "Train.h"
 
+// forward declarations (avoiding circular dependenices)
 class Simulation;
 class RailwayCompany;
 class Train;
@@ -20,10 +20,14 @@ public:
 	{
 		m_statusStream << formatTime(m_time) << ' ';   //put time of the event in the status stream (which is the only info known at this point)
 	};
-	virtual ~Event();
+	virtual ~Event() {}   //virtual destructor
 
+	/*
+	Pure virtual member function that processes this event appropriately.
+	*/
 	virtual void processEvent() = 0;
 
+	// ------ GETTERS ------
 	Time getTime() const { return m_time; }
 	const std::shared_ptr<Train> getTrain() const { return m_train; }  //which train does this event handle?
 
@@ -62,7 +66,6 @@ public:
 	void processEvent() override;
 };
 
-
 class ReadyEvent : public Event
 {
 public:
@@ -72,7 +75,6 @@ public:
 	void processEvent() override;
 };
 
-
 class DepartureEvent : public Event
 {
 public:
@@ -81,7 +83,6 @@ public:
 
 	void processEvent() override;
 };
-
 
 class ArriveEvent : public Event
 {

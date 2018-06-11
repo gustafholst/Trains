@@ -7,10 +7,6 @@
 
 void printTrain(std::ostream &os, std::shared_ptr<const Train> v, LogLevel p_logLevel=LogLevel::NORMAL);
 
-Event::~Event()
-{
-}
-
 std::string Event::toString() const
 {
 	return m_statusStream.str();

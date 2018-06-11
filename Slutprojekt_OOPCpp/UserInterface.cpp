@@ -123,6 +123,9 @@ void UserInterface::setupSimulationMenu()
 	simMenu.addItem("View all events", false, [this]() {     //only display when simulation is finished
 		displayEventsHistory();
 	});
+	simMenu.addItem("View time table", true, [this]() {
+		displayDynamicTimetable();
+	});
 	simMenu.addItem("Train menu...", true, [this]() {
 		while (trainMenu.display(m_simulation));    //keep displaying until return option is chosen
 	});
@@ -197,9 +200,6 @@ void UserInterface::setupTrainMenu()
 	trainMenu.addItem("View train history", true, [this]() {
 		displayTrainHistory();
 	});
-	/*trainMenu.addItem("View time table", true, [this]() {
-		displayTimetable();
-	});*/
 	trainMenu.addItem("Change log level", true, [this]() {
 		logLevelMenu.display(m_simulation);
 	});
@@ -523,6 +523,32 @@ void UserInterface::displayTimetable()
 	for (const Route *r : routes)
 		std::cout << *r << std::endl;
 
+	goOn("Press <ENTER> for menu...");
+}
+
+void UserInterface::displayDynamicTimetable()
+{
+	std::vector<std::shared_ptr<Train>> trains = m_railway->getAllTrains();
+
+	//sort all trains by departure times
+	std::sort(trains.begin(), trains.end(), [](std::shared_ptr<Train> t1, std::shared_ptr<Train> t2) {
+		return t1->getDepTime() < t2->getDepTime();
+	});
+
+	std::cout << "Timetable" << std::endl;
+	sepLine(std::cout, 11, '=');
+	std::cout << std::setw(7) << "Dep" << std::setw(8) << "delay" << std::setw(24) << "from" << std::setw(8) << "Arr" << std::setw(8) << "delay" << std::setw(24) << "to" << std::setw(8) << "Train#" << std::endl;
+	std::cout << std::setw(7) << "---" << std::setw(8) << "-----" << std::setw(24) << "----" << std::setw(8) << "---" << std::setw(8) << "-----" << std::setw(24) << "--" << std::setw(8) << "------" << std::endl;
+	for (auto t : trains)
+	{
+		Time arrDelay = t->getActualArrTime() - t->getArrTime();
+		Time depDelay = t->getDepartureDelay();
+		std::cout << std::setw(7) << t->getDepTime() << std::setw(8) << (depDelay > 0 ? '+' + formatTime(depDelay) : "   -   ")
+		<< std::setw(24) << t->getDepStation() << std::setw(7) << t->getArrTime() 
+		<< std::setw(8) << (arrDelay > 0 ? '+' + formatTime(arrDelay) : "   -   ")
+		<< std::setw(24) << t->getArrStation() << '[' << t->getId() << ']' << std::endl;
+	}
+		
 	goOn("Press <ENTER> for menu...");
 }
 

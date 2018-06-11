@@ -35,7 +35,7 @@ public:
 	TrainStation* getStation(const std::string &sName);
 	std::vector<const TrainStation*> getAllStations() const;
 	std::vector<std::string> getAllStationNames() const;
-	const std::vector<std::shared_ptr<Train>> getAllTrains() const;
+	std::vector<std::shared_ptr<Train>> getAllTrains() const;
 	std::vector<const Route*> getTimetable();
 	const std::map<std::string, int> getInitialVehicleCount() const { return m_vehicleCount; }
 	int getDistance(const std::string &depStation, const std::string &arrStation) { return distance(depStation, arrStation); }

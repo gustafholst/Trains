@@ -172,7 +172,7 @@ std::vector<std::string> RailwayCompany::getAllStationNames() const
 	return names;
 }
 
-const std::vector<std::shared_ptr<Train>> RailwayCompany::getAllTrains() const
+std::vector<std::shared_ptr<Train>> RailwayCompany::getAllTrains() const
 {
 	std::vector<std::shared_ptr<Train>> allTrains;
 

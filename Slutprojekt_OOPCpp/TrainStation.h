@@ -23,7 +23,7 @@ public:
 	std::string getName() const { return m_name; }
 	const std::vector<std::shared_ptr<Vehicle>> getAllVehicles() const;
 	const std::vector<std::pair<VehicleType, int>> getVehicleCounts() const;  //nr vehicles by type
-	const int getNumVehicles() const { return m_vehicles.size(); }   //get only available vehicles (of all types)
+	size_t getNumVehicles() const { return m_vehicles.size(); }   //get only available vehicles (of all types)
 	const std::vector <std::shared_ptr<Train>> getTrains() const { return m_trains; }
 
 	// ------ SETTER ------

@@ -1,10 +1,10 @@
 /*
-* helpfunctions.h
+* auxilliary.h
 * Gustaf Holst, guho1700
-* 2018-03-01
+* 2018-05-25
 * v1.0
 *
-* Declares a number of functions used throughout the Jukebox application.
+* Declares a number of functions used throughout the simulation application.
 *
 */
 
@@ -20,6 +20,7 @@
 #endif
 
 #include <iostream>
+#include <limits>
 #include "Time.h"
 
 /*

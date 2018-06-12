@@ -1,9 +1,17 @@
+/*
+* main.cpp
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Entry point for train simulation application.
+*
+*/
 
 #include <iostream>
 #include "RailwayCompany.h"
 #include "TrainMap.h"
 #include "UserInterface.h"
-
 
 int main()
 {
@@ -24,7 +32,6 @@ int main()
 		}
 
 		Simulation simulation;
-
 		UserInterface ui(&company, &simulation);
 		reset = ui.run();
 	} while (reset);

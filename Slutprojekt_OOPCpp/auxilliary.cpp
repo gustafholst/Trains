@@ -1,7 +1,16 @@
+/*
+* auxilliary.cpp
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Defines a number of functions used throughout the simulation application.
+*
+*/
+
 #include <string>
 #include <algorithm>
 #include <sstream>
-
 #include "auxilliary.h"
 
 std::string getStringInput(const std::string & message)

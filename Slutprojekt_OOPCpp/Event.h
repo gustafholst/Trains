@@ -1,4 +1,12 @@
-
+/*
+* Event.h
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Declares the Event class and all its subclasses.
+*
+*/
 
 #ifndef EVENT_H
 #define EVENT_H
@@ -63,6 +71,10 @@ public:
 	AssemblyEvent(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
 		:Event(p_simulation, p_railway, p_time, p_train) {}
 
+	/*
+	Places train i assembly state and schedules a ready event if train is complete (and ready event is not after simulation
+	end time), otherwise schedules another assembly event.
+	*/
 	void processEvent() override;
 };
 
@@ -72,6 +84,10 @@ public:
 	ReadyEvent(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
 		:Event(p_simulation, p_railway, p_time, p_train) {}
 		
+	/*
+	Places train i ready state and schedules a departure event if departure is not after simulation
+	end time.
+	*/
 	void processEvent() override;
 };
 
@@ -81,6 +97,10 @@ public:
 	DepartureEvent(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
 		:Event(p_simulation, p_railway, p_time, p_train) {}
 
+	/*
+	Places train i running state, calculates its speed and schedules an arrive event based on the speed.
+	Train is removed from station and placed in railway companys data structure for running traíns.
+	*/
 	void processEvent() override;
 };
 
@@ -90,6 +110,10 @@ public:
 	ArriveEvent(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
 		:Event(p_simulation, p_railway, p_time, p_train) {}
 
+	/*
+	Places train i arrived state and schedules a finish event (disassembly).
+	Train is removed from data structure for running traíns and placed in arrival stations datastructure for trains.
+	*/
 	void processEvent() override;
 };
 
@@ -99,6 +123,9 @@ public:
 	FinishEvent(Simulation *p_simulation, RailwayCompany *p_railway, Time &p_time, std::shared_ptr<Train> p_train)
 		:Event(p_simulation, p_railway, p_time, p_train) {}
 
+	/*
+	Places train in finish state and disassembles the train. All vehicles are place in arrival stations vehicle pool.
+	*/
 	void processEvent() override;
 };
 

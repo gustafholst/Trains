@@ -48,7 +48,7 @@ void RailwayCompany::loadTimetable()
 			if (inFile.eof())
 				break;
 
-			tmpRoute = Route();  //reinitialize in order to clear vehicle vector
+			tmpRoute = Route();  //reinitialize in order to clear vehicle type vector
 		}
 	}
 	else
@@ -72,11 +72,11 @@ std::vector<std::shared_ptr<Vehicle>> RailwayCompany::getAllVehicles() const
 		copy(vehicles.cbegin(), vehicles.cend(), std::back_inserter(allVehicles));
 	}
 
-	sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
+	std::sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
 		return a->getId() < b->getId();
 	});
 
-	stable_sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
+	std::stable_sort(allVehicles.begin(), allVehicles.end(), [](std::shared_ptr<Vehicle> a, std::shared_ptr<Vehicle> b) {
 		return a->getType() < b->getType();
 	});  
 
@@ -108,7 +108,7 @@ std::tuple<std::shared_ptr<Vehicle>, std::shared_ptr<Train>, TrainStation*> Rail
 			return std::make_tuple(found, train, nullptr);
 	}
 
-	return { nullptr, nullptr, nullptr };  //vehicle does not exist
+	return std::make_tuple(nullptr, nullptr, nullptr);  //vehicle does not exist
 }
 
 std::shared_ptr<Train> RailwayCompany::locateTrain(const int id)

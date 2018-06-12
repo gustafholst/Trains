@@ -15,7 +15,7 @@ std::shared_ptr<Vehicle> TrainStation::findVehicle(VehicleType type)
 		return a->getId() < b->getId();
 	});
 	
-	auto it = find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](const std::shared_ptr<Vehicle> &vptr) {
+	auto it = std::find_if(m_vehicles.cbegin(), m_vehicles.cend(), [type](const std::shared_ptr<Vehicle> &vptr) {
 		return vptr->getType() == type;
 	});
 
@@ -48,7 +48,7 @@ std::shared_ptr<Vehicle> TrainStation::locateVehicle(const int id) const
 
 std::shared_ptr<Train> TrainStation::locateTrain(const int id) const
 {
-	auto found = find_if(m_trains.cbegin(), m_trains.cend(), [id](const std::shared_ptr<Train> t) {
+	auto found = std::find_if(m_trains.cbegin(), m_trains.cend(), [id](const std::shared_ptr<Train> t) {
 		return t->getId() == id;
 	});
 

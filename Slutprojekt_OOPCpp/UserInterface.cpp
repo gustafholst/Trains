@@ -408,7 +408,6 @@ void UserInterface::displayTrainByVehicle()
 	auto v = m_railway->locateVehicle(searched);    //returns a tuple (vehicle, train, station)
 	auto vehicle = get<0>(v);
 	auto train = get<1>(v);
-	auto station = get<2>(v);
 	if (vehicle)
 	{
 		if (train)

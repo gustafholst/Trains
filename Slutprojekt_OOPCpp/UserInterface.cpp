@@ -56,8 +56,8 @@ void UserInterface::startSimulation()
 	for (size_t item = 0; item < 3; ++item)
 		startMenu.disableItem(item);  //change start/end time, start simulation
 
-	startMenu.enableItem(4);   //enable back to simulation option
-	startMenu.enableItem(5);   //enable restart simulation option
+	startMenu.enableItem(3);   //enable back to simulation option
+	startMenu.enableItem(4);   //enable restart simulation option
 
 	prepareSimulation();
 	runSimulation();
@@ -82,9 +82,6 @@ void UserInterface::setupStartMenu()
 	startMenu.addItem("Change end time", true, [this]() {
 		changeEndTime();
 	});
-	startMenu.addItem("View time table", true, [this]() {
-		displayTimetable();
-	});
 	startMenu.addItem("Start simulation", true, [this]() {
 		startSimulation();
 	});
@@ -96,6 +93,9 @@ void UserInterface::setupStartMenu()
 	});
 	startMenu.addItem("Restart simulation", false, [this]() {
 		resetSim = true;
+	});
+	startMenu.addItem("View time table", true, [this]() {
+		displayTimetable();
 	});
 }
 
@@ -562,6 +562,9 @@ void UserInterface::displayDynamicTimetable()
 	std::cout << std::setw(7) << "---" << std::setw(8) << "-----" << std::setw(24) << "----" << std::setw(8) << "---" << std::setw(8) << "-----" << std::setw(24) << "--" << std::setw(8) << "------" << std::endl;
 	for (auto t : trains)
 	{
+		if (t->getDepTime() < m_simulation->getStartTime() || t->getDepTime() > m_simulation->getEndTime())
+			continue;
+
 		Time arrDelay = t->getActualArrTime() - t->getArrTime();
 		Time depDelay = t->getDepartureDelay();
 		std::cout << std::setw(7) << t->getDepTime() << std::setw(8) << (depDelay > 0 ? '+' + formatTime(depDelay) : "   -   ")

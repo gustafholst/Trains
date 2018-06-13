@@ -89,7 +89,7 @@ void DepartureEvent::processEvent()
 	station->depart(m_train);   
 	m_railway->placeInTransit(m_train);
 
-	//calculate speed
+	//calculate speed needed to arrive on time
 	int distance = m_railway->getDistance(m_train->getDepStation(), m_train->getArrStation());   //km
 	Time duration = m_train->getArrTime() - m_train->getActualDepTime();
 	// if departure time is before arrival time 

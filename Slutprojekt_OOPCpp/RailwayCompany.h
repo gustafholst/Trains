@@ -101,4 +101,5 @@ private:
 	std::map<std::string, int> m_vehicleCount;   //keep track of how many vehicles are att the station at beginning of simulation
 };
 
+
 #endif // RAILWAYCOMPANY_H

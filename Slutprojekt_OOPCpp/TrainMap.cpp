@@ -34,7 +34,7 @@ void TrainMap::readFromFile()
 		{
 			std::getline(inFile, tmpArr, ' ');
 			inFile >> tmpDist;
-			inFile.get();
+			inFile.ignore(2, '\n');   //adjusted for Linux
 
 			m_distances[tmpDep][tmpArr] = tmpDist;
 		}

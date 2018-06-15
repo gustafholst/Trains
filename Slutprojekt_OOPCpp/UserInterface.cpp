@@ -1,3 +1,12 @@
+/*
+* UserInterface.cpp
+* Gustaf Holst, guho1700
+* 2018-05-29
+* v1.0
+*
+* Defines the UserInterface class.
+*
+*/
 
 #include <functional>
 #include <algorithm>
@@ -212,7 +221,8 @@ void UserInterface::setupTrainMenu()
 	trainMenu.addItem("View trains that never left the station", false, [this]() {
 		for (auto &t : m_allTrains)
 		{
-			if (t->getState() != TrainState::FINISHED)
+			// only print trains with dep time before sim end time and that are not in finished state
+			if (!(t->getDepTime() > m_simulation->getEndTime()) && t->getState() != TrainState::FINISHED)
 			{
 				printTrain(std::cout, t, m_simulation->getLogLevel());
 				std::cout << std::endl;
@@ -455,7 +465,8 @@ void UserInterface::displayStatistics()
 
 	for (auto train : m_allTrains)
 	{
-		if (train->getState() == TrainState::FINISHED)
+		//only count trains with orginal departure time befor simulation end time
+		if (!(train->getDepTime() > m_simulation->getEndTime()) && train->getState() == TrainState::FINISHED)
 		{
 			Time delay = train->getDelay();
 			if (delay > 0)  
@@ -466,7 +477,7 @@ void UserInterface::displayStatistics()
 
 			totalDepDelay += train->getDepartureDelay();  //accumulate total departure delay
 		}
-		else  //if trains state is not finished -> it got stuck in assembled or ready state
+		else if (!(train->getDepTime() > m_simulation->getEndTime())) //if trains state is not finished -> it got stuck in assembled or ready state
 		{
 			++numNoDeparture;
 		}
@@ -542,8 +553,14 @@ void UserInterface::displayTimetable()
 	std::cout << std::setw(6) << "Dep" << std::setw(24) << "from" << std::setw(6) << "Arr" << std::setw(30) << "to" << std::setw(8) << "Train#" << std::endl;
 	std::cout << std::setw(6) << "---" << std::setw(24) << "----" << std::setw(6) << "---" << std::setw(30) << "--" << std::setw(8) << "------" << std::endl;
 	for (const Route *r : routes)
-		std::cout << *r << std::endl;
+	{
+		// do not print trains departing outside the selected start/stop times for simulation
+		if (r->getDepTime() < m_simulation->getStartTime() || r->getDepTime() > m_simulation->getEndTime())
+			continue;
 
+		std::cout << *r << std::endl;
+	}
+		
 	goOn("Press <ENTER> for menu...");
 }
 
@@ -562,6 +579,7 @@ void UserInterface::displayDynamicTimetable()
 	std::cout << std::setw(7) << "---" << std::setw(8) << "-----" << std::setw(24) << "----" << std::setw(8) << "---" << std::setw(8) << "-----" << std::setw(24) << "--" << std::setw(8) << "------" << std::endl;
 	for (auto t : trains)
 	{
+		// do not print trains departing outside the selected start/stop times for simulation
 		if (t->getDepTime() < m_simulation->getStartTime() || t->getDepTime() > m_simulation->getEndTime())
 			continue;
 

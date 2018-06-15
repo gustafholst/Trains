@@ -1,4 +1,12 @@
-
+/*
+* constants.h
+* Gustaf Holst, guho1700
+* 2018-05-19
+* v1.0
+*
+* Defines constants and enums used in the simulation.
+*
+*/
 
 #ifndef CONSTANTS_H
 #define CONSTANTS_H

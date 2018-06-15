@@ -1,3 +1,12 @@
+/*
+* Event.cpp
+* Gustaf Holst, guho1700
+* 2018-05-25
+* v1.0
+*
+* Defines the Event class and all its subclasses.
+*
+*/
 
 #include <cmath>
 #include "Event.h"

@@ -1,4 +1,12 @@
-
+/*
+* UserInterface.h
+* Gustaf Holst, guho1700
+* 2018-05-29
+* v1.0
+*
+* Declares the UserInterface class.
+*
+*/
 
 #ifndef USERINTERFACE_H
 #define USERINTERFACE_H
@@ -44,6 +52,7 @@ private:
 	void runSimulation();
 	void startSimulation();
 
+	// setting up the various menus
 	void setupMenus();
 	void setupStartMenu();
 	void setupSimulationMenu();
@@ -52,6 +61,7 @@ private:
 	void setupStationMenu();
 	void setupVehicleMenu();
 	
+	// --- methods corresponding to menu options ---
 	void nextEvent();
 	void nextInterval();
 

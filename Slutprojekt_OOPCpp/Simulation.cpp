@@ -167,6 +167,11 @@ void Simulation::writeToFile()
 	{
 		for (auto event : m_eventsHistory)
 		{
+			// do not print events taking place before simulation start time (arrival/finish events taking place after
+			//end time will be written to file)
+			if (event->getTime() < m_startTime)
+				continue;
+
 			printEvent(outFile, event);
 			outFile << std::endl;
 		}

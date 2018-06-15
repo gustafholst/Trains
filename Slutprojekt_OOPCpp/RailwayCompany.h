@@ -19,7 +19,6 @@
 #include "auxilliary.h"
 #include "Simulation.h"
 
-
 class RailwayCompany
 {
 public:
